@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contemplatio — Publique seu livro · Simulador</title>
+  <meta name="description" content="Monte seu pacote editorial e veja o investimento. Publicação, impressão e distribuição com a Contemplatio.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #FDFAF5;
+      --text:        #2C2C2C;
+      --heading:     #1B3A4B;
+      --gold:        #8B6914;
+      --gold-light:  #C9A84C;
+      --coral:       #FF5C3D; /* acento Convocação para CTAs */
+      --coral-dark:  #E04528;
+      --card-bg:     #FFFFFF;
+      --border:      #E8E0D4;
+      --rule:        #D4C8B8;
+      --muted:       #6B6157;
+      --ideal:       #5A7A6B;
+      --panel:       #F5F0E8;
+    }
+
+    html {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Source Sans 3', Georgia, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px 80px;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      color: var(--heading);
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    a { color: var(--gold); }
+
+    /* ── Section labels (eyebrow) ── */
+    .section-label {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    /* ── Hero ── */
+    .hero { text-align: center; padding: 24px 0 40px; border-bottom: 1.5px solid var(--rule); margin-bottom: 48px; }
+    .hero__logo { height: 56px; margin-bottom: 16px; }
+    .hero__eyebrow {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 12px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+    .hero__title { font-size: 48px; margin-bottom: 8px; letter-spacing: -0.01em; }
+    .hero__tagline { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; color: var(--muted); margin-bottom: 20px; }
+    .hero__subhead { font-size: 16px; color: var(--text); }
+
+    /* ── Ornament rule ── */
+    .ornament-rule { display: flex; align-items: center; gap: 12px; margin: 56px 0 24px; }
+    .ornament-rule .rule-line { flex: 1; height: 1px; background: var(--rule); }
+    .ornament-rule .rule-mark {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      color: var(--gold-light);
+    }
+
+    /* ── Layout pacotes ── */
+    .sim-pacotes__layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 32px;
+      align-items: start;
+    }
+
+    /* ── Cards de pacote ── */
+    .pacote-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .pacote-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 20px 18px 18px;
+      text-align: left;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .pacote-card:hover { border-color: var(--gold-light); }
+    .pacote-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .pacote-card[aria-checked="true"] {
+      border-color: var(--gold);
+      border-width: 1.5px;
+      box-shadow: 0 2px 12px rgba(139,105,20,0.10);
+    }
+    .pacote-card--featured { border-color: var(--gold-light); border-width: 1.5px; }
+    .pacote-card__badge {
+      position: absolute; top: -1px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--gold); color: var(--bg);
+      font-size: 10px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 3px 12px;
+    }
+    .pacote-card__nome { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--heading); margin-top: 4px; }
+    .pacote-card--featured .pacote-card__nome { margin-top: 12px; }
+    .pacote-card__preco { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--gold); font-weight: 500; }
+    .pacote-card__headline { font-size: 14px; color: var(--muted); font-style: italic; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+    .pacote-card__features { list-style: none; }
+    .pacote-card__features li { font-size: 14px; padding: 4px 0 4px 14px; position: relative; }
+    .pacote-card__features li::before {
+      content: ''; position: absolute; left: 0; top: 50%;
+      transform: translateY(-50%);
+      width: 4px; height: 4px;
+      background: var(--gold-light); border-radius: 50%;
+    }
+
+    /* ── Customização ── */
+    .customizacao { background: var(--panel); padding: 24px; border: 1px solid var(--border); }
+    .customizacao__titulo { font-size: 22px; margin-bottom: 16px; }
+    .extras { border: none; margin-bottom: 24px; }
+    .extras legend, .canais legend {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+    }
+    .extra, .canal {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 0; font-size: 15px; cursor: pointer;
+      border-bottom: 1px solid var(--border);
+    }
+    .extra:last-of-type, .canal:last-of-type { border-bottom: none; }
+    .extra input, .canal input { width: 16px; height: 16px; accent-color: var(--gold); }
+    .extra__preco { margin-left: auto; color: var(--muted); font-size: 13px; }
+    .extra--info { color: var(--muted); font-size: 13px; font-style: italic; padding: 8px 0; cursor: default; }
+
+    .slider-group { margin-bottom: 20px; }
+    .slider-group label { display: block; font-size: 14px; margin-bottom: 6px; font-weight: 500; }
+    .slider-group input[type="range"] { width: 100%; accent-color: var(--gold); }
+    .slider-group output { color: var(--gold); font-weight: 600; }
+    .slider-hint { font-size: 12px; color: var(--muted); margin-top: 4px; font-style: italic; }
+
+    /* ── Resumo ── */
+    .resumo, .resumo-dist {
+      background: var(--card-bg);
+      border: 1.5px solid var(--gold-light);
+      padding: 24px 22px;
+      position: sticky;
+      top: 24px;
+    }
+    .resumo__titulo { font-size: 22px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .resumo__lista { list-style: none; margin-bottom: 16px; }
+    .resumo__lista li { font-size: 14px; padding: 6px 0; display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dashed var(--border); }
+    .resumo__lista li:last-child { border-bottom: none; }
+    .resumo__lista li span:last-child { color: var(--gold); font-weight: 600; white-space: nowrap; }
+    .resumo__total {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 12px 0; border-top: 1.5px solid var(--rule); margin-bottom: 16px;
+    }
+    .resumo__total-label { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+    .resumo__total-valor { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--heading); }
+
+    .btn {
+      display: block; width: 100%; padding: 12px 16px;
+      font-family: inherit; font-size: 15px; font-weight: 600;
+      text-align: center; cursor: pointer;
+      border: none; border-radius: 2px; text-decoration: none;
+      margin-bottom: 8px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn--primary { background: var(--coral); color: white; }
+    .btn--primary:hover, .btn--primary:focus { background: var(--coral-dark); }
+    .btn--secondary { background: transparent; color: var(--heading); border: 1px solid var(--border); }
+    .btn--secondary:hover, .btn--secondary:focus { background: var(--panel); border-color: var(--gold-light); }
+
+    /* ── Distribuição ── */
+    .sim-distribuicao__subhead {
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+    .sim-distribuicao__layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 32px;
+      align-items: start;
+    }
+    .sim-distribuicao__inputs {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 24px;
+    }
+    .input-group { display: block; margin-bottom: 20px; }
+    .input-group span { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+    .input-group input[type="number"] {
+      width: 100%; padding: 8px 10px; font: inherit;
+      border: 1px solid var(--border); background: var(--bg);
+      border-radius: 2px;
+    }
+    .input-group input[type="number"]:focus,
+    .canais input:focus, .extras input:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+    .canais { border: none; margin: 16px 0 8px; }
+
+    .resumo-dist__nota {
+      font-size: 12px; color: var(--muted); font-style: italic;
+      margin: 12px 0 16px; line-height: 1.5;
+    }
+
+    /* ── Como funciona ── */
+    .passos { list-style: none; max-width: 720px; margin: 0 auto; }
+    .passos li {
+      display: flex; gap: 16px; padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .passos li:last-child { border-bottom: none; }
+    .passo-num {
+      font-family: 'Cormorant Garamond', serif; font-size: 22px;
+      font-weight: 600; color: var(--gold); min-width: 20px;
+    }
+    .passos div strong { display: block; color: var(--heading); font-weight: 600; margin-bottom: 2px; }
+    .passos div span { color: var(--muted); font-size: 14px; }
+
+    /* ── Sobre ── */
+    .sobre__box {
+      background: var(--card-bg); border: 1px solid var(--border);
+      padding: 20px 24px; max-width: 720px; margin: 0 auto;
+    }
+    .sobre__box p { color: var(--muted); font-style: italic; line-height: 1.7; }
+
+    /* ── Footer ── */
+    .rodape {
+      border-top: 1.5px solid var(--rule);
+      padding-top: 24px; margin-top: 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .rodape__brand { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--heading); }
+    .rodape__brand span { color: var(--muted); font-weight: 300; }
+    .rodape__contato { font-size: 14px; color: var(--muted); }
+    .rodape__contato a { color: var(--muted); text-decoration: none; }
+    .rodape__contato a:hover { color: var(--coral); }
+
+    /* ── Tablet ── */
+    @media (max-width: 1023px) {
+      .sim-pacotes__layout, .sim-distribuicao__layout { grid-template-columns: 1fr; }
+
+      .resumo, .resumo-dist {
+        position: fixed; bottom: 0; left: 0; right: 0;
+        border: none; border-top: 1.5px solid var(--gold-light);
+        padding: 12px 20px; max-height: 40vh; overflow-y: auto;
+        box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+        z-index: 50;
+      }
+      .resumo__titulo, .resumo-dist__nota { display: none; }
+      .resumo__lista { display: none; }
+      .resumo__total { padding: 0; border: none; margin-bottom: 8px; }
+      .btn { font-size: 14px; padding: 10px 14px; }
+      .btn--secondary { display: none; } /* PDF some no mobile/tablet — pouco usado */
+
+      body { padding-bottom: 140px; }
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 639px) {
+      body { padding: 24px 16px 140px; }
+      .hero__title { font-size: 32px; }
+      .hero__tagline { font-size: 18px; }
+
+      .pacote-cards {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding: 4px 4px 12px;
+        margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px;
+      }
+      .pacote-card {
+        min-width: 80%; flex: 0 0 80%;
+        scroll-snap-align: center;
+      }
+    }
+
+    @media print {
+      @page { size: A4 portrait; margin: 16mm 14mm; }
+      body {
+        max-width: none; padding: 0;
+        background: white; color: black;
+      }
+      .hero { border-bottom: 2px solid var(--heading); padding: 0 0 16pt; margin-bottom: 18pt; }
+      .hero__logo { height: 48px; }
+      .hero__title { font-size: 28pt; }
+      .hero__tagline, .hero__subhead { font-size: 11pt; }
+
+      /* Esconder controles interativos */
+      .pacote-cards,
+      .customizacao,
+      .sim-distribuicao,
+      .ornament-rule,
+      .como-funciona,
+      .sobre,
+      #btn-whatsapp-pacote, #btn-pdf, #btn-whatsapp-dist {
+        display: none !important;
+      }
+
+      /* Resumo vira a proposta principal */
+      .sim-pacotes__layout { display: block; }
+      .resumo {
+        position: static !important;
+        border: 2px solid var(--heading);
+        padding: 16pt;
+        box-shadow: none;
+      }
+      .resumo__titulo { font-size: 18pt; }
+      .resumo__lista li { font-size: 11pt; }
+      .resumo__total-valor { font-size: 22pt; }
+
+      /* Inserir cabeçalho da seção e nota de condições */
+      .resumo::before {
+        content: 'Proposta de serviços';
+        display: block;
+        font-size: 10pt; font-weight: 600; letter-spacing: 0.18em;
+        text-transform: uppercase; color: var(--gold); margin-bottom: 8pt;
+      }
+      .resumo::after {
+        content: 'Condições: 50% na assinatura · 50% na entrega · Validade: 30 dias · Contato: WhatsApp (11) 2673-5929 · convocacom@gmail.com';
+        display: block;
+        margin-top: 16pt; padding-top: 10pt;
+        border-top: 1px solid var(--rule);
+        font-size: 9pt; color: var(--muted); line-height: 1.5;
+      }
+
+      .rodape { border-top: 1px solid var(--rule); margin-top: 12pt; padding-top: 8pt; font-size: 9pt; }
+
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── 1. HERO ── -->
+  <header class="hero">
+    <img src="../contemplatio logo cinza.png" alt="Contemplatio" class="hero__logo">
+    <p class="hero__eyebrow">uma rede de amigos contemplativos · um projeto Convocação</p>
+    <h1 class="hero__title">Publique seu livro</h1>
+    <p class="hero__tagline">Você escreve. A gente cuida do resto.</p>
+    <p class="hero__subhead">Monte seu pacote e veja o investimento.</p>
+  </header>
+
+  <main>
+
+    <!-- ── 2. SIMULADOR DE PACOTES ── -->
+    <section class="sim-pacotes" aria-labelledby="sim-pacotes-titulo">
+      <h2 id="sim-pacotes-titulo" class="section-label">Monte seu pacote</h2>
+
+      <div class="sim-pacotes__layout">
+        <div class="sim-pacotes__config">
+
+          <!-- Cards de pacote -->
+          <div class="pacote-cards" role="radiogroup" aria-label="Escolha um pacote">
+            <button type="button" class="pacote-card" role="radio" aria-checked="false" data-pacote="semente">
+              <span class="pacote-card__nome">Semente</span>
+              <span class="pacote-card__preco">R$ 4.550</span>
+              <span class="pacote-card__headline">Seu livro publicado na Amazon como e-book.</span>
+              <ul class="pacote-card__features">
+                <li>Revisão profissional</li>
+                <li>Capa personalizada</li>
+                <li>Diagramação</li>
+                <li>Publicação ebook Amazon</li>
+                <li>ISBN e registros legais</li>
+              </ul>
+            </button>
+
+            <button type="button" class="pacote-card pacote-card--featured" role="radio" aria-checked="true" data-pacote="arvore">
+              <span class="pacote-card__badge">Mais escolhido</span>
+              <span class="pacote-card__nome">Árvore</span>
+              <span class="pacote-card__preco">R$ 14.700</span>
+              <span class="pacote-card__headline">Tudo do Semente + 500 exemplares impressos.</span>
+              <ul class="pacote-card__features">
+                <li>Brochura, papel pólen, 14×21 cm</li>
+                <li>500 cópias entregues</li>
+                <li>E-book na Amazon</li>
+              </ul>
+            </button>
+
+            <button type="button" class="pacote-card" role="radio" aria-checked="false" data-pacote="floresta">
+              <span class="pacote-card__nome">Floresta</span>
+              <span class="pacote-card__preco">R$ 17.200</span>
+              <span class="pacote-card__headline">Tudo do Árvore + campanha de lançamento.</span>
+              <ul class="pacote-card__features">
+                <li>Comunicação</li>
+                <li>Kits influenciadores</li>
+                <li>Press release</li>
+                <li>Banner / marca-página</li>
+              </ul>
+            </button>
+          </div>
+
+          <!-- Customização -->
+          <div class="customizacao">
+            <h3 class="customizacao__titulo">Personalize</h3>
+
+            <fieldset class="extras">
+              <legend>Extras</legend>
+              <label class="extra"><input type="checkbox" data-extra="ghostwriting"> Ghostwriting <span class="extra__preco">+ R$ 6.000</span></label>
+              <label class="extra"><input type="checkbox" data-extra="edicao_profunda"> Edição profunda <span class="extra__preco">+ R$ 2.250</span></label>
+              <label class="extra"><input type="checkbox" data-extra="audiolivro"> Audiolivro <span class="extra__preco">+ R$ 4.500</span></label>
+              <p class="extra extra--info">Adaptação para ebook · já incluso em todos os pacotes</p>
+            </fieldset>
+
+            <div class="slider-group" id="grupo-tiragem">
+              <label for="slider-tiragem">Tiragem: <output id="out-tiragem">500</output> exemplares</label>
+              <input type="range" id="slider-tiragem" min="300" max="2000" step="50" value="500">
+              <p class="slider-hint">+ R$ 20,31 por exemplar acima de 500</p>
+            </div>
+
+            <div class="slider-group">
+              <label for="slider-paginas">Páginas: <output id="out-paginas">200</output></label>
+              <input type="range" id="slider-paginas" min="80" max="400" step="10" value="200">
+              <p class="slider-hint">+ R$ 750 a cada 50 páginas acima de 200</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resumo -->
+        <aside class="resumo" aria-live="polite">
+          <h3 class="resumo__titulo">Sua proposta</h3>
+          <ul class="resumo__lista" id="resumo-lista"></ul>
+          <div class="resumo__total">
+            <span class="resumo__total-label">Investimento</span>
+            <span class="resumo__total-valor" id="resumo-total">R$ 0,00</span>
+          </div>
+          <a class="btn btn--primary" id="btn-whatsapp-pacote" href="#" target="_blank" rel="noopener">Falar com consultor</a>
+          <button type="button" class="btn btn--secondary" id="btn-pdf">Baixar proposta em PDF</button>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ── 3. SEPARADOR ── -->
+    <div class="ornament-rule"><span class="rule-line"></span><span class="rule-mark">◆</span><span class="rule-line"></span></div>
+
+    <!-- ── 4. SIMULADOR DE DISTRIBUIÇÃO ── -->
+    <section class="sim-distribuicao" aria-labelledby="sim-dist-titulo">
+      <h2 id="sim-dist-titulo" class="section-label">Já tem o livro pronto?</h2>
+      <p class="sim-distribuicao__subhead">Simule sua distribuição profissional na Amazon e Mercado Livre.</p>
+
+      <div class="sim-distribuicao__layout">
+        <div class="sim-distribuicao__inputs">
+          <label class="input-group">
+            <span>Preço de capa</span>
+            <input type="number" id="dist-preco" min="0" step="0.01" placeholder="Ex: 65,00">
+          </label>
+          <label class="input-group">
+            <span>Estoque armazenado</span>
+            <input type="number" id="dist-estoque" min="0" value="500">
+          </label>
+          <div class="slider-group">
+            <label for="dist-vendas">Vendas/mês estimadas: <output id="out-vendas">50</output></label>
+            <input type="range" id="dist-vendas" min="0" max="1000" step="10" value="50">
+          </div>
+
+          <fieldset class="canais">
+            <legend>Canais de venda</legend>
+            <label class="canal"><input type="checkbox" id="dist-amazon"> Amazon Vendor</label>
+            <label class="canal"><input type="checkbox" id="dist-ml"> Mercado Livre</label>
+            <p class="extra--info" style="margin-top:8px">Armazenagem inclusa · cobrada por exemplar em estoque</p>
+          </fieldset>
+
+          <div class="slider-group" id="grupo-mix" hidden>
+            <label for="dist-mix">Mix: <output id="out-mix">50</output>% Amazon · <output id="out-mix-ml">50</output>% Mercado Livre</label>
+            <input type="range" id="dist-mix" min="0" max="100" step="5" value="50">
+          </div>
+        </div>
+
+        <aside class="resumo-dist" aria-live="polite">
+          <h3 class="resumo__titulo">Custo mensal estimado</h3>
+          <ul class="resumo__lista" id="resumo-dist-lista"></ul>
+          <div class="resumo__total">
+            <span class="resumo__total-label">Total/mês</span>
+            <span class="resumo__total-valor" id="resumo-dist-total">R$ 0,00</span>
+          </div>
+          <p class="resumo-dist__nota">Valores simulados. Variam conforme volume real e condições da plataforma.</p>
+          <a class="btn btn--primary" id="btn-whatsapp-dist" href="#" target="_blank" rel="noopener">Conversar sobre distribuição</a>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ── 5. COMO FUNCIONA ── -->
+    <section class="como-funciona">
+      <div class="ornament-rule"><span class="rule-line"></span><span class="rule-mark">§</span><span class="rule-line"></span></div>
+      <h2 class="section-label">Como funciona</h2>
+      <ol class="passos">
+        <li><span class="passo-num">1</span><div><strong>Conversa inicial</strong><span>Entendemos seu projeto — gratuito, sem compromisso.</span></div></li>
+        <li><span class="passo-num">2</span><div><strong>Proposta</strong><span>Você recebe o orçamento detalhado.</span></div></li>
+        <li><span class="passo-num">3</span><div><strong>Contrato</strong><span>Pagamento em 2× — 50% na assinatura, 50% na entrega.</span></div></li>
+        <li><span class="passo-num">4</span><div><strong>Produção</strong><span>10 a 16 semanas dependendo do pacote.</span></div></li>
+        <li><span class="passo-num">5</span><div><strong>Entrega</strong><span>Seu livro publicado e pronto.</span></div></li>
+      </ol>
+    </section>
+
+    <!-- ── 6. SOBRE ── -->
+    <section class="sobre">
+      <div class="ornament-rule"><span class="rule-line"></span><span class="rule-mark">†</span><span class="rule-line"></span></div>
+      <h2 class="section-label">Sobre a Contemplatio</h2>
+      <div class="sobre__box">
+        <p>A Contemplatio é uma editora cristã especializada em espiritualidade, teologia e vida contemplativa. Já publicamos obras de autores como Georges Bernanos e Nikolai Berdyaev. Seu livro terá o mesmo padrão de qualidade.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ── 7. FOOTER ── -->
+  <footer class="rodape">
+    <div class="rodape__brand">Contemplatio <span>— um projeto Convocação</span></div>
+    <div class="rodape__contato">
+      <a href="https://wa.me/5511267359290" target="_blank" rel="noopener">WhatsApp (11) 2673-5929</a>
+      · <a href="mailto:convocacom@gmail.com">convocacom@gmail.com</a>
+    </div>
+  </footer>
+
+  <script src="simulador.calc.js"></script>
+  <script>
+(function () {
+  'use strict';
+
+  // ── Estado ─────────────────────────────────────────────────
+  const state = {
+    pacote: 'arvore',
+    extras: [],
+    tiragem: 500,
+    paginas: 200,
+  };
+
+  // ── Refs ───────────────────────────────────────────────────
+  const $cards = document.querySelectorAll('.pacote-card');
+  const $extras = document.querySelectorAll('.extras input[data-extra]');
+  const $sliderTiragem = document.getElementById('slider-tiragem');
+  const $outTiragem = document.getElementById('out-tiragem');
+  const $grupoTiragem = document.getElementById('grupo-tiragem');
+  const $sliderPaginas = document.getElementById('slider-paginas');
+  const $outPaginas = document.getElementById('out-paginas');
+  const $resumoLista = document.getElementById('resumo-lista');
+  const $resumoTotal = document.getElementById('resumo-total');
+  const $btnWa = document.getElementById('btn-whatsapp-pacote');
+  const $btnPdf = document.getElementById('btn-pdf');
+
+  // ── Render do resumo ───────────────────────────────────────
+  const PACOTE_LABELS = { semente: 'Semente', arvore: 'Árvore', floresta: 'Floresta' };
+  const EXTRA_LABELS = { ghostwriting: 'Ghostwriting', edicao_profunda: 'Edição profunda', audiolivro: 'Audiolivro' };
+
+  function renderResumo() {
+    const items = [];
+    items.push({ label: PACOTE_LABELS[state.pacote], valor: Calc.formatBRL(Calc.packageBase(state.pacote)) });
+
+    state.extras.forEach(e => {
+      items.push({ label: EXTRA_LABELS[e], valor: Calc.formatBRL(Calc.extrasTotal([e])) });
+    });
+
+    if ((state.pacote === 'arvore' || state.pacote === 'floresta') && state.tiragem !== 500) {
+      const delta = Calc.deltaTiragem(state.tiragem);
+      items.push({
+        label: `Tiragem ${state.tiragem} ex.`,
+        valor: delta > 0 ? '+ ' + Calc.formatBRL(delta) : '—',
+      });
+    }
+    if (state.paginas !== 200) {
+      const delta = Calc.deltaPaginas(state.paginas);
+      items.push({
+        label: `${state.paginas} páginas`,
+        valor: delta > 0 ? '+ ' + Calc.formatBRL(delta) : '—',
+      });
+    }
+
+    $resumoLista.innerHTML = items.map(i =>
+      `<li><span>${i.label}</span><span>${i.valor}</span></li>`
+    ).join('');
+
+    $resumoTotal.textContent = Calc.formatBRL(Calc.totalPacote(state));
+
+    // WhatsApp link
+    const msg = Calc.mensagemPacote(state);
+    $btnWa.href = 'https://wa.me/5511267359290?text=' + encodeURIComponent(msg);
+  }
+
+  // ── Tiragem visibility ─────────────────────────────────────
+  function atualizaVisibilidadeTiragem() {
+    const visivel = state.pacote === 'arvore' || state.pacote === 'floresta';
+    $grupoTiragem.style.display = visivel ? '' : 'none';
+  }
+
+  // ── Listeners ──────────────────────────────────────────────
+  $cards.forEach((card, idx) => {
+    // tabindex: roving — ativo (-1) nos não-selecionados, 0 no selecionado (padrão WAI-ARIA radio)
+    card.setAttribute('tabindex', card.getAttribute('aria-checked') === 'true' ? '0' : '-1');
+
+    card.addEventListener('click', () => {
+      state.pacote = card.dataset.pacote;
+      $cards.forEach(c => {
+        const sel = (c === card);
+        c.setAttribute('aria-checked', String(sel));
+        c.setAttribute('tabindex', sel ? '0' : '-1');
+      });
+      card.focus();
+      atualizaVisibilidadeTiragem();
+      renderResumo();
+    });
+
+    card.addEventListener('keydown', (e) => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        card.click();
+      } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        const next = $cards[(idx + 1) % $cards.length];
+        next.click();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const prev = $cards[(idx - 1 + $cards.length) % $cards.length];
+        prev.click();
+      }
+    });
+  });
+
+  $extras.forEach(cb => {
+    cb.addEventListener('change', () => {
+      const key = cb.dataset.extra;
+      if (cb.checked) state.extras.push(key);
+      else state.extras = state.extras.filter(e => e !== key);
+      renderResumo();
+    });
+  });
+
+  $sliderTiragem.addEventListener('input', () => {
+    state.tiragem = parseInt($sliderTiragem.value, 10);
+    $outTiragem.textContent = state.tiragem;
+    renderResumo();
+  });
+
+  $sliderPaginas.addEventListener('input', () => {
+    state.paginas = parseInt($sliderPaginas.value, 10);
+    $outPaginas.textContent = state.paginas;
+    renderResumo();
+  });
+
+  $btnPdf.addEventListener('click', () => window.print());
+
+  // ─────────────────────────────────────────────────────────
+  // SIMULADOR DE DISTRIBUIÇÃO
+  // ─────────────────────────────────────────────────────────
+  const distState = {
+    precoCapa: 0,
+    estoque: 500,
+    vendas: 50,
+    canais: { armazenagem: true, amazon: false, ml: false },
+    mixAmazon: 50,
+  };
+
+  const $distPreco = document.getElementById('dist-preco');
+  const $distEstoque = document.getElementById('dist-estoque');
+  const $distVendas = document.getElementById('dist-vendas');
+  const $outVendas = document.getElementById('out-vendas');
+  const $distAmazon = document.getElementById('dist-amazon');
+  const $distMl = document.getElementById('dist-ml');
+  const $distMix = document.getElementById('dist-mix');
+  const $outMix = document.getElementById('out-mix');
+  const $outMixMl = document.getElementById('out-mix-ml');
+  const $grupoMix = document.getElementById('grupo-mix');
+  const $resumoDistLista = document.getElementById('resumo-dist-lista');
+  const $resumoDistTotal = document.getElementById('resumo-dist-total');
+  const $btnWaDist = document.getElementById('btn-whatsapp-dist');
+
+  function atualizaVisibilidadeMix() {
+    $grupoMix.hidden = !(distState.canais.amazon && distState.canais.ml);
+  }
+
+  function renderDist() {
+    const r = Calc.custoDistribuicao(distState);
+    const items = [];
+    if (distState.canais.armazenagem) {
+      items.push({ label: `Armazenagem (${distState.estoque} ex.)`, valor: Calc.formatBRL(r.armazenagem) });
+    }
+    if (distState.canais.amazon) {
+      items.push({ label: 'Amazon Vendor', valor: Calc.formatBRL(r.amazon) });
+    }
+    if (distState.canais.ml) {
+      items.push({ label: 'Mercado Livre', valor: Calc.formatBRL(r.ml) });
+    }
+    if (items.length === 0) {
+      $resumoDistLista.innerHTML = '<li><span style="color:var(--muted);font-style:italic">Marque os canais ao lado para simular.</span><span></span></li>';
+    } else {
+      $resumoDistLista.innerHTML = items.map(i =>
+        `<li><span>${i.label}</span><span>${i.valor}</span></li>`
+      ).join('');
+    }
+    $resumoDistTotal.textContent = Calc.formatBRL(r.total);
+
+    const msg = Calc.mensagemDistribuicao(distState);
+    $btnWaDist.href = 'https://wa.me/5511267359290?text=' + encodeURIComponent(msg);
+  }
+
+  $distPreco.addEventListener('input', () => {
+    distState.precoCapa = parseFloat($distPreco.value) || 0;
+    renderDist();
+  });
+  $distEstoque.addEventListener('input', () => {
+    distState.estoque = parseInt($distEstoque.value, 10) || 0;
+    renderDist();
+  });
+  $distVendas.addEventListener('input', () => {
+    distState.vendas = parseInt($distVendas.value, 10);
+    $outVendas.textContent = distState.vendas;
+    renderDist();
+  });
+  $distAmazon.addEventListener('change', () => {
+    distState.canais.amazon = $distAmazon.checked;
+    atualizaVisibilidadeMix();
+    renderDist();
+  });
+  $distMl.addEventListener('change', () => {
+    distState.canais.ml = $distMl.checked;
+    atualizaVisibilidadeMix();
+    renderDist();
+  });
+  $distMix.addEventListener('input', () => {
+    distState.mixAmazon = parseInt($distMix.value, 10);
+    $outMix.textContent = distState.mixAmazon;
+    $outMixMl.textContent = 100 - distState.mixAmazon;
+    renderDist();
+  });
+
+  // ─────────────────────────────────────────────────────────
+  // PERSISTÊNCIA
+  // ─────────────────────────────────────────────────────────
+  const STORAGE_KEY = 'contemplatio_simulador_v1';
+
+  function salvar() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ state, distState }));
+    } catch (e) { /* localStorage indisponível, segue */ }
+  }
+
+  function carregar() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      if (saved.state) {
+        Object.assign(state, saved.state);
+        $cards.forEach(c => c.setAttribute('aria-checked', String(c.dataset.pacote === state.pacote)));
+        $extras.forEach(cb => { cb.checked = state.extras.indexOf(cb.dataset.extra) !== -1; });
+        $sliderTiragem.value = state.tiragem; $outTiragem.textContent = state.tiragem;
+        $sliderPaginas.value = state.paginas; $outPaginas.textContent = state.paginas;
+      }
+      if (saved.distState) {
+        Object.assign(distState, saved.distState);
+        $distPreco.value = distState.precoCapa || '';
+        $distEstoque.value = distState.estoque;
+        $distVendas.value = distState.vendas; $outVendas.textContent = distState.vendas;
+        $distAmazon.checked = distState.canais.amazon;
+        $distMl.checked = distState.canais.ml;
+        // armazenagem é sempre inclusa — não tem checkbox
+        distState.canais.armazenagem = true;
+        $distMix.value = distState.mixAmazon;
+        $outMix.textContent = distState.mixAmazon;
+        $outMixMl.textContent = 100 - distState.mixAmazon;
+      }
+    } catch (e) { /* JSON inválido, ignora */ }
+  }
+
+  // Salvar disparado por listener no document — pega TODOS os change/input
+  document.addEventListener('input', salvar);
+  document.addEventListener('change', salvar);
+
+  // ── Init ───────────────────────────────────────────────────
+  carregar();
+  atualizaVisibilidadeTiragem();
+  atualizaVisibilidadeMix();
+  renderResumo();
+  renderDist();
+})();
+</script>
+</body>
+</html>
