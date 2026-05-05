@@ -18,8 +18,8 @@
       --heading:     #1B3A4B;
       --gold:        #8B6914;
       --gold-light:  #C9A84C;
-      --coral:       #FF5C3D; /* acento Convocação para CTAs */
-      --coral-dark:  #E04528;
+      --coral:       #FA452E;
+      --coral-dark:  #D8341E;
       --card-bg:     #FFFFFF;
       --border:      #E8E0D4;
       --rule:        #D4C8B8;
@@ -35,6 +35,7 @@
       font-size: 16px;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
     }
 
     body {
@@ -52,7 +53,6 @@
 
     a { color: var(--gold); }
 
-    /* ── Section labels (eyebrow) ── */
     .section-label {
       font-family: 'Source Sans 3', sans-serif;
       font-size: 11px;
@@ -60,7 +60,7 @@
       letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--gold);
-      margin-bottom: 20px;
+      margin-bottom: 12px;
       text-align: center;
     }
 
@@ -80,7 +80,6 @@
     .hero__tagline { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; color: var(--muted); margin-bottom: 20px; }
     .hero__subhead { font-size: 16px; color: var(--text); }
 
-    /* ── Ornament rule ── */
     .ornament-rule { display: flex; align-items: center; gap: 12px; margin: 56px 0 24px; }
     .ornament-rule .rule-line { flex: 1; height: 1px; background: var(--rule); }
     .ornament-rule .rule-mark {
@@ -89,20 +88,17 @@
       color: var(--gold-light);
     }
 
-    /* ── Layout pacotes ── */
-    .sim-pacotes__layout {
-      display: grid;
-      grid-template-columns: 1fr 320px;
-      gap: 32px;
-      align-items: start;
+    /* ── Atalhos pacotes prontos ── */
+    .atalhos { margin-bottom: 24px; }
+    .atalhos__lead {
+      text-align: center; max-width: 640px; margin: 0 auto 28px;
+      color: var(--muted); font-size: 16px;
     }
-
-    /* ── Cards de pacote ── */
     .pacote-cards {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
-      margin-bottom: 40px;
+      margin-bottom: 0;
     }
     .pacote-card {
       background: var(--card-bg);
@@ -117,15 +113,10 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      transition: border-color 0.15s, box-shadow 0.15s;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
     }
-    .pacote-card:hover { border-color: var(--gold-light); }
+    .pacote-card:hover { border-color: var(--gold-light); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
     .pacote-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-    .pacote-card[aria-checked="true"] {
-      border-color: var(--gold);
-      border-width: 1.5px;
-      box-shadow: 0 2px 12px rgba(139,105,20,0.10);
-    }
     .pacote-card--featured { border-color: var(--gold-light); border-width: 1.5px; }
     .pacote-card__badge {
       position: absolute; top: -1px; left: 50%;
@@ -136,7 +127,7 @@
     }
     .pacote-card__nome { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--heading); margin-top: 4px; }
     .pacote-card--featured .pacote-card__nome { margin-top: 12px; }
-    .pacote-card__preco { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--gold); font-weight: 500; }
+    .pacote-card__preco { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--gold); font-weight: 500; }
     .pacote-card__headline { font-size: 14px; color: var(--muted); font-style: italic; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
     .pacote-card__features { list-style: none; }
     .pacote-card__features li { font-size: 14px; padding: 4px 0 4px 14px; position: relative; }
@@ -147,44 +138,153 @@
       background: var(--gold-light); border-radius: 50%;
     }
 
-    /* ── Customização ── */
-    .customizacao { background: var(--panel); padding: 24px; border: 1px solid var(--border); }
-    .customizacao__titulo { font-size: 22px; margin-bottom: 16px; }
-    .extras { border: none; margin-bottom: 24px; }
-    .extras legend, .canais legend {
-      font-size: 11px; font-weight: 600; letter-spacing: 0.16em;
-      text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+    /* ── Wizard layout ── */
+    .wizard-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 32px;
+      align-items: start;
     }
-    .extra, .canal {
+
+    /* ── Step ── */
+    .step {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 24px 26px;
+      margin-bottom: 18px;
+      animation: stepIn 0.35s ease-out;
+    }
+    @keyframes stepIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .step__pergunta {
+      font-size: 22px; font-weight: 500;
+      margin-bottom: 16px; color: var(--heading);
+    }
+    .step__nota { font-size: 13px; color: var(--muted); font-style: italic; margin-top: 12px; line-height: 1.5; }
+    .step__hint { font-size: 13px; color: var(--muted); margin-top: 6px; font-style: italic; }
+
+    /* ── Cards de origem ── */
+    .step-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .step-card {
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      padding: 18px 16px;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      color: inherit;
+      transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .step-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.05); }
+    .step-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .step-card[aria-selected="true"] { border-color: var(--coral); background: var(--card-bg); box-shadow: 0 4px 16px rgba(250,69,46,0.10); }
+    .step-card--accent[aria-selected="true"] { border-color: var(--coral); background: #FFF5F2; }
+    .step-card__icon { font-size: 24px; line-height: 1; }
+    .step-card__titulo { font-size: 16px; font-weight: 600; color: var(--heading); }
+    .step-card__desc { font-size: 13px; color: var(--muted); line-height: 1.45; }
+
+    /* ── Checks ── */
+    .checks { border: none; display: flex; flex-direction: column; gap: 4px; }
+    .checks legend {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+    }
+    .check {
       display: flex; align-items: center; gap: 10px;
-      padding: 8px 0; font-size: 15px; cursor: pointer;
+      padding: 9px 0; font-size: 15px; cursor: pointer;
       border-bottom: 1px solid var(--border);
     }
-    .extra:last-of-type, .canal:last-of-type { border-bottom: none; }
-    .extra input, .canal input { width: 16px; height: 16px; accent-color: var(--gold); }
-    .extra__preco { margin-left: auto; color: var(--muted); font-size: 13px; }
-    .extra--info { color: var(--muted); font-size: 13px; font-style: italic; padding: 8px 0; cursor: default; }
+    .check:last-child { border-bottom: none; }
+    .check input { width: 16px; height: 16px; accent-color: var(--gold); flex-shrink: 0; }
+    .check__preco { margin-left: auto; color: var(--muted); font-size: 13px; white-space: nowrap; }
+    .check--info { color: var(--muted); font-size: 13px; font-style: italic; padding: 8px 0; cursor: default; }
 
-    .slider-group { margin-bottom: 20px; }
+    /* ── Sliders ── */
+    .slider-group { margin-bottom: 18px; }
     .slider-group label { display: block; font-size: 14px; margin-bottom: 6px; font-weight: 500; }
     .slider-group input[type="range"] { width: 100%; accent-color: var(--gold); }
     .slider-group output { color: var(--gold); font-weight: 600; }
     .slider-hint { font-size: 12px; color: var(--muted); margin-top: 4px; font-style: italic; }
 
-    .radio-group { display: flex; flex-direction: column; gap: 6px; }
+    /* ── Radio pills ── */
+    .radio-pills, .radio-group {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .radio-group { flex-direction: column; gap: 6px; }
     .radio-pill {
-      display: flex; align-items: center; gap: 8px;
-      padding: 8px 10px; font-size: 14px; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 14px; font-size: 14px; cursor: pointer;
       border: 1px solid var(--border); background: var(--bg);
       border-radius: 2px;
       transition: border-color 0.15s, background 0.15s;
+      flex: 1;
+      min-width: 0;
     }
     .radio-pill:hover { border-color: var(--gold-light); }
-    .radio-pill input[type="radio"] { width: 14px; height: 14px; accent-color: var(--gold); }
+    .radio-pill input[type="radio"] { width: 14px; height: 14px; accent-color: var(--gold); flex-shrink: 0; }
     .radio-pill:has(input:checked) { border-color: var(--gold); background: var(--card-bg); }
 
+    /* ── Calculadora caracteres/laudas/páginas ── */
+    .calc-helper {
+      margin-top: 10px; padding: 14px 16px;
+      background: var(--panel); border: 1px solid var(--border); border-radius: 2px;
+    }
+    .calc-helper summary {
+      font-size: 13px; color: var(--gold); cursor: pointer; font-weight: 600;
+      padding: 4px 0;
+      list-style: none;
+    }
+    .calc-helper summary::-webkit-details-marker { display: none; }
+    .calc-helper summary::before { content: '▸ '; }
+    .calc-helper[open] summary::before { content: '▾ '; }
+    .calc-helper__body { margin-top: 12px; }
+    .calc-helper__hint { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+    .calc-helper__inputs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
+    .calc-helper__inputs label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
+    .calc-helper__inputs input {
+      padding: 6px 8px; font: inherit; font-size: 14px;
+      border: 1px solid var(--border); background: var(--bg);
+      border-radius: 2px;
+    }
+    .calc-helper__inputs input:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+    .btn--ghost {
+      background: transparent; color: var(--gold);
+      border: 1px solid var(--gold-light);
+      font-size: 13px; padding: 8px 14px;
+      cursor: pointer; border-radius: 2px;
+    }
+    .btn--ghost:hover { background: var(--card-bg); }
+
+    /* ── Inputs (number) ── */
+    .input-group { display: block; margin-bottom: 14px; }
+    .input-group span { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+    .input-group input[type="number"] {
+      width: 100%; padding: 8px 10px; font: inherit;
+      border: 1px solid var(--border); background: var(--bg);
+      border-radius: 2px;
+    }
+    .input-group input[type="number"]:focus,
+    .check input:focus, .step input[type="radio"]:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+
+    /* ── Distribuição inline (caminho impresso direto) ── */
+    .step--distribuicao .step__pergunta + .step__nota { margin-top: -8px; margin-bottom: 16px; }
+    .dist-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+    @media (max-width: 600px) {
+      .dist-inputs { grid-template-columns: 1fr; }
+      .calc-helper__inputs { grid-template-columns: 1fr; }
+    }
+
     /* ── Resumo ── */
-    .resumo, .resumo-dist {
+    .resumo {
       background: var(--card-bg);
       border: 1.5px solid var(--gold-light);
       padding: 24px 22px;
@@ -196,12 +296,23 @@
     .resumo__lista li { font-size: 14px; padding: 6px 0; display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dashed var(--border); }
     .resumo__lista li:last-child { border-bottom: none; }
     .resumo__lista li span:last-child { color: var(--gold); font-weight: 600; white-space: nowrap; }
+    .resumo__lista li.resumo__placeholder span { color: var(--muted); font-style: italic; font-weight: 400; }
     .resumo__total {
       display: flex; justify-content: space-between; align-items: baseline;
-      padding: 12px 0; border-top: 1.5px solid var(--rule); margin-bottom: 16px;
+      padding: 12px 0; border-top: 1.5px solid var(--rule); margin-bottom: 8px;
     }
     .resumo__total-label { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
     .resumo__total-valor { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--heading); }
+    .resumo__total--mensal .resumo__total-valor { font-size: 22px; color: var(--gold); }
+    .resumo__sugestao {
+      font-size: 13px; color: var(--ideal); font-style: italic;
+      padding: 10px 12px; background: #F0F4F1;
+      border-left: 3px solid var(--ideal); margin-bottom: 12px; line-height: 1.4;
+    }
+    .resumo__nota {
+      font-size: 12px; color: var(--muted); font-style: italic;
+      margin: 8px 0 14px; line-height: 1.5;
+    }
 
     .btn {
       display: block; width: 100%; padding: 12px 16px;
@@ -215,42 +326,6 @@
     .btn--primary:hover, .btn--primary:focus { background: var(--coral-dark); }
     .btn--secondary { background: transparent; color: var(--heading); border: 1px solid var(--border); }
     .btn--secondary:hover, .btn--secondary:focus { background: var(--panel); border-color: var(--gold-light); }
-
-    /* ── Distribuição ── */
-    .sim-distribuicao__subhead {
-      text-align: center;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 18px;
-      font-style: italic;
-      color: var(--muted);
-      margin-bottom: 32px;
-    }
-    .sim-distribuicao__layout {
-      display: grid;
-      grid-template-columns: 1fr 320px;
-      gap: 32px;
-      align-items: start;
-    }
-    .sim-distribuicao__inputs {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      padding: 24px;
-    }
-    .input-group { display: block; margin-bottom: 20px; }
-    .input-group span { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; }
-    .input-group input[type="number"] {
-      width: 100%; padding: 8px 10px; font: inherit;
-      border: 1px solid var(--border); background: var(--bg);
-      border-radius: 2px;
-    }
-    .input-group input[type="number"]:focus,
-    .canais input:focus, .extras input:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
-    .canais { border: none; margin: 16px 0 8px; }
-
-    .resumo-dist__nota {
-      font-size: 12px; color: var(--muted); font-style: italic;
-      margin: 12px 0 16px; line-height: 1.5;
-    }
 
     /* ── Como funciona ── */
     .passos { list-style: none; max-width: 720px; margin: 0 auto; }
@@ -288,69 +363,49 @@
 
     /* ── Tablet ── */
     @media (max-width: 1023px) {
-      .sim-pacotes__layout, .sim-distribuicao__layout { grid-template-columns: 1fr; }
-
-      .resumo, .resumo-dist {
+      .wizard-layout { grid-template-columns: 1fr; }
+      .resumo {
         position: fixed; bottom: 0; left: 0; right: 0;
         border: none; border-top: 1.5px solid var(--gold-light);
-        padding: 12px 20px; max-height: 40vh; overflow-y: auto;
+        padding: 12px 20px; max-height: 50vh; overflow-y: auto;
         box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
         z-index: 50;
       }
-      .resumo__titulo, .resumo-dist__nota { display: none; }
+      .resumo__titulo { font-size: 16px; padding-bottom: 6px; margin-bottom: 8px; }
       .resumo__lista { display: none; }
-      .resumo__total { padding: 0; border: none; margin-bottom: 8px; }
+      .resumo__total { padding: 4px 0; border: none; margin-bottom: 4px; }
+      .resumo__total-valor { font-size: 22px; }
+      .resumo__nota, .resumo__sugestao { display: none; }
       .btn { font-size: 14px; padding: 10px 14px; }
-      .btn--secondary { display: none; } /* PDF some no mobile/tablet — pouco usado */
-
-      body { padding-bottom: 140px; }
+      .btn--secondary { display: none; }
+      body { padding-bottom: 160px; }
     }
 
     /* ── Mobile ── */
     @media (max-width: 639px) {
-      body { padding: 24px 16px 140px; }
+      body { padding: 24px 16px 160px; }
       .hero__title { font-size: 32px; }
       .hero__tagline { font-size: 18px; }
-
       .pacote-cards {
-        display: flex;
-        gap: 12px;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        padding: 4px 4px 12px;
-        margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px;
+        grid-template-columns: 1fr;
       }
-      .pacote-card {
-        min-width: 80%; flex: 0 0 80%;
-        scroll-snap-align: center;
-      }
+      .step-cards { grid-template-columns: 1fr; }
+      .step { padding: 18px 18px; }
+      .step__pergunta { font-size: 18px; }
     }
 
     @media print {
       @page { size: A4 portrait; margin: 16mm 14mm; }
-      body {
-        max-width: none; padding: 0;
-        background: white; color: black;
-      }
+      body { max-width: none; padding: 0; background: white; color: black; }
       .hero { border-bottom: 2px solid var(--heading); padding: 0 0 16pt; margin-bottom: 18pt; }
       .hero__logo { height: 48px; }
       .hero__title { font-size: 28pt; }
       .hero__tagline, .hero__subhead { font-size: 11pt; }
-
-      /* Esconder controles interativos */
-      .pacote-cards,
-      .customizacao,
-      .sim-distribuicao,
-      .sim-video,
-      .ornament-rule,
-      .como-funciona,
-      .sobre,
-      #btn-whatsapp-pacote, #btn-pdf, #btn-whatsapp-dist {
+      .atalhos, .step, .ornament-rule, .como-funciona, .sobre,
+      #btn-whatsapp, #btn-pdf {
         display: none !important;
       }
-
-      /* Resumo vira a proposta principal */
-      .sim-pacotes__layout { display: block; }
+      .wizard-layout { display: block; }
       .resumo {
         position: static !important;
         border: 2px solid var(--heading);
@@ -358,10 +413,9 @@
         box-shadow: none;
       }
       .resumo__titulo { font-size: 18pt; }
+      .resumo__lista { display: block; }
       .resumo__lista li { font-size: 11pt; }
       .resumo__total-valor { font-size: 22pt; }
-
-      /* Inserir cabeçalho da seção e nota de condições */
       .resumo::before {
         content: 'Proposta de serviços';
         display: block;
@@ -375,16 +429,14 @@
         border-top: 1px solid var(--rule);
         font-size: 9pt; color: var(--muted); line-height: 1.5;
       }
-
       .rodape { border-top: 1px solid var(--rule); margin-top: 12pt; padding-top: 8pt; font-size: 9pt; }
-
       a { color: inherit; text-decoration: none; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ── 1. HERO ── -->
+  <!-- ── HERO ── -->
   <header class="hero">
     <img src="contemplatio-logo.png" alt="Contemplatio" class="hero__logo">
     <p class="hero__eyebrow">uma rede de amigos contemplativos · um projeto Convocação</p>
@@ -395,237 +447,233 @@
 
   <main>
 
-    <!-- ── 2. SIMULADOR DE PACOTES ── -->
-    <section class="sim-pacotes" aria-labelledby="sim-pacotes-titulo">
-      <h2 id="sim-pacotes-titulo" class="section-label">Monte seu pacote</h2>
+    <!-- ── ATALHOS ── -->
+    <section class="atalhos" aria-label="Pacotes prontos">
+      <p class="section-label">Pacotes prontos · com pressa?</p>
+      <p class="atalhos__lead">Clique num pacote pra preencher o simulador de uma vez. Você ainda pode ajustar tudo depois.</p>
+      <div class="pacote-cards">
+        <button type="button" class="pacote-card" data-shortcut="semente">
+          <span class="pacote-card__nome">Semente</span>
+          <span class="pacote-card__preco">R$ 4.550</span>
+          <span class="pacote-card__headline">Manuscrito → ebook na Amazon</span>
+          <ul class="pacote-card__features">
+            <li>Revisão profissional</li>
+            <li>Capa personalizada</li>
+            <li>Diagramação</li>
+            <li>ISBN e cadastros legais</li>
+            <li>Publicação ebook Amazon</li>
+          </ul>
+        </button>
+        <button type="button" class="pacote-card pacote-card--featured" data-shortcut="arvore">
+          <span class="pacote-card__badge">Mais escolhido</span>
+          <span class="pacote-card__nome">Árvore</span>
+          <span class="pacote-card__preco">A partir de R$ 14.554</span>
+          <span class="pacote-card__headline">Tudo do Semente + 500 ex impressos</span>
+          <ul class="pacote-card__features">
+            <li>Tudo do Semente</li>
+            <li>500 cópias entregues</li>
+            <li>Brochura, offset 75g, 14×21 cm</li>
+          </ul>
+        </button>
+        <button type="button" class="pacote-card" data-shortcut="floresta">
+          <span class="pacote-card__nome">Floresta</span>
+          <span class="pacote-card__preco">A partir de R$ 17.054</span>
+          <span class="pacote-card__headline">Tudo da Árvore + lançamento</span>
+          <ul class="pacote-card__features">
+            <li>Tudo da Árvore</li>
+            <li>Comunicação / assessoria</li>
+            <li>Kits influenciadores</li>
+            <li>Press release</li>
+            <li>Material gráfico</li>
+          </ul>
+        </button>
+      </div>
+    </section>
 
-      <div class="sim-pacotes__layout">
-        <div class="sim-pacotes__config">
+    <div class="ornament-rule"><span class="rule-line"></span><span class="rule-mark">◆</span><span class="rule-line"></span></div>
 
-          <!-- Cards de pacote -->
-          <div class="pacote-cards" role="radiogroup" aria-label="Escolha um pacote">
-            <button type="button" class="pacote-card" role="radio" aria-checked="false" data-pacote="semente">
-              <span class="pacote-card__nome">Semente</span>
-              <span class="pacote-card__preco">R$ 4.550</span>
-              <span class="pacote-card__headline">Seu livro publicado na Amazon como e-book.</span>
-              <ul class="pacote-card__features">
-                <li>Revisão profissional</li>
-                <li>Capa personalizada</li>
-                <li>Diagramação</li>
-                <li>Publicação ebook Amazon</li>
-                <li>ISBN e registros legais</li>
-              </ul>
-            </button>
+    <!-- ── WIZARD ── -->
+    <section aria-label="Simulador sob medida">
+      <p class="section-label">Sob medida · monte do zero</p>
 
-            <button type="button" class="pacote-card pacote-card--featured" role="radio" aria-checked="true" data-pacote="arvore">
-              <span class="pacote-card__badge">Mais escolhido</span>
-              <span class="pacote-card__nome">Árvore</span>
-              <span class="pacote-card__preco">R$ 14.700</span>
-              <span class="pacote-card__headline">Tudo do Semente + 500 exemplares impressos.</span>
-              <ul class="pacote-card__features">
-                <li>Brochura, papel pólen, 14×21 cm</li>
-                <li>500 cópias entregues</li>
-                <li>E-book na Amazon</li>
-              </ul>
-            </button>
+      <div class="wizard-layout">
 
-            <button type="button" class="pacote-card" role="radio" aria-checked="false" data-pacote="floresta">
-              <span class="pacote-card__nome">Floresta</span>
-              <span class="pacote-card__preco">R$ 17.200</span>
-              <span class="pacote-card__headline">Tudo do Árvore + campanha de lançamento.</span>
-              <ul class="pacote-card__features">
-                <li>Comunicação</li>
-                <li>Kits influenciadores</li>
-                <li>Press release</li>
-                <li>Banner / marca-página</li>
-              </ul>
-            </button>
+        <div class="wizard-steps">
+
+          <!-- STEP origem -->
+          <div class="step" data-step="origem">
+            <h3 class="step__pergunta">Em que ponto você está?</h3>
+            <div class="step-cards" role="radiogroup" aria-label="Origem">
+              <button type="button" class="step-card" role="radio" aria-selected="false" data-origem="ideia">
+                <span class="step-card__icon">💡</span>
+                <span class="step-card__titulo">Tenho uma ideia</span>
+                <span class="step-card__desc">Mas ainda não escrevi. Preciso de ajuda pra criar o texto.</span>
+              </button>
+              <button type="button" class="step-card" role="radio" aria-selected="false" data-origem="manuscrito">
+                <span class="step-card__icon">📝</span>
+                <span class="step-card__titulo">Tenho um manuscrito</span>
+                <span class="step-card__desc">Já escrevi. Quero revisar, diagramar e publicar.</span>
+              </button>
+              <button type="button" class="step-card" role="radio" aria-selected="false" data-origem="video">
+                <span class="step-card__icon">🎥</span>
+                <span class="step-card__titulo">Tenho vídeos/áudios</span>
+                <span class="step-card__desc">YouTube, podcast, sermões, palestras. Quero virar livro.</span>
+              </button>
+              <button type="button" class="step-card step-card--accent" role="radio" aria-selected="false" data-origem="impresso">
+                <span class="step-card__icon">📚</span>
+                <span class="step-card__titulo">Já tenho o livro pronto</span>
+                <span class="step-card__desc">Quero vender na Amazon e Mercado Livre.</span>
+              </button>
+            </div>
           </div>
 
-          <!-- Customização -->
-          <div class="customizacao">
-            <h3 class="customizacao__titulo">Personalize</h3>
-
-            <fieldset class="extras">
-              <legend>Extras</legend>
-              <label class="extra"><input type="checkbox" data-extra="ghostwriting"> Ghostwriting <span class="extra__preco">+ R$ 6.000</span></label>
-              <label class="extra"><input type="checkbox" data-extra="edicao_profunda"> Edição profunda <span class="extra__preco">+ R$ 2.250</span></label>
-              <label class="extra"><input type="checkbox" data-extra="audiolivro"> Audiolivro <span class="extra__preco">+ R$ 4.500</span></label>
-              <p class="extra extra--info">Adaptação para ebook · já incluso em todos os pacotes</p>
-            </fieldset>
-
-            <div class="slider-group" id="grupo-tiragem">
-              <label for="slider-tiragem">Tiragem: <output id="out-tiragem">500</output> exemplares</label>
-              <input type="range" id="slider-tiragem" min="20" max="500" step="10" value="500">
-              <p class="slider-hint">Para tiragens acima de 500 exemplares, fale com o consultor.</p>
+          <!-- STEP c-video (só caminho video) -->
+          <div class="step" data-step="c-video" hidden>
+            <h3 class="step__pergunta">Sobre seus vídeos</h3>
+            <div class="slider-group">
+              <label for="vid-horas">Horas de vídeo bruto: <output id="out-vid-horas">10</output>h</label>
+              <input type="range" id="vid-horas" min="1" max="100" step="1" value="10">
             </div>
+            <div class="slider-group">
+              <label for="vid-paginas">Páginas-alvo do livro final: <output id="out-vid-paginas">120</output></label>
+              <input type="range" id="vid-paginas" min="40" max="500" step="10" value="120">
+            </div>
+            <fieldset class="checks">
+              <label class="check"><input type="checkbox" id="vid-traducao"> Tradução do output (PT→EN ou outro) <span class="check__preco">+30%</span></label>
+            </fieldset>
+            <p class="step__nota">Direito autoral · vídeos do próprio autor ou de terceiros com autorização. Após gerado o manuscrito, você pode adicionar serviços editoriais e impressão abaixo.</p>
+          </div>
 
-            <div class="slider-group" id="grupo-papel">
-              <label>Papel</label>
-              <div class="radio-group">
-                <label class="radio-pill"><input type="radio" name="papel" value="offset_75_sem_orelha" checked> offset 75g · sem orelha</label>
-                <label class="radio-pill"><input type="radio" name="papel" value="polen_80_com_orelha"> pólen 80g · com orelha</label>
+          <!-- STEP b-servicos (manuscrito/ideia/video continuação) -->
+          <div class="step" data-step="b-servicos" hidden>
+            <h3 class="step__pergunta">De que serviços editoriais você precisa?</h3>
+            <fieldset class="checks">
+              <label class="check"><input type="checkbox" data-svc="ghostwriting"> Ghostwriting <span class="check__preco">R$ 6.000</span></label>
+              <label class="check"><input type="checkbox" data-svc="revisao"> Revisão profissional <span class="check__preco">R$ 9/lauda</span></label>
+              <label class="check"><input type="checkbox" data-svc="edicao_profunda"> Edição profunda <span class="check__preco">R$ 2.250</span></label>
+              <label class="check"><input type="checkbox" data-svc="diagramacao"> Diagramação <span class="check__preco">R$ 6/lauda</span></label>
+              <label class="check"><input type="checkbox" data-svc="capa"> Capa personalizada <span class="check__preco">R$ 850</span></label>
+              <label class="check"><input type="checkbox" data-svc="isbn"> ISBN e cadastros legais <span class="check__preco">R$ 500</span></label>
+              <label class="check"><input type="checkbox" data-svc="ebook"> Adaptação para ebook (Amazon) <span class="check__preco">R$ 250</span></label>
+              <label class="check"><input type="checkbox" data-svc="audiolivro"> Audiolivro <span class="check__preco">R$ 4.500</span></label>
+            </fieldset>
+          </div>
+
+          <!-- STEP b-tamanho -->
+          <div class="step" data-step="b-tamanho" hidden>
+            <h3 class="step__pergunta">Quantas páginas terá o livro?</h3>
+            <div class="slider-group">
+              <label for="paginas">Páginas: <output id="out-paginas">200</output></label>
+              <input type="range" id="paginas" min="80" max="400" step="10" value="200">
+            </div>
+            <details class="calc-helper">
+              <summary>Não sabe ainda? Calcule a partir de caracteres ou laudas</summary>
+              <div class="calc-helper__body">
+                <p class="calc-helper__hint">Digite em qualquer campo. Os outros se ajustam automaticamente. (1 lauda = 2.100 caracteres · 1 página diagramada ≈ 1.800 caracteres)</p>
+                <div class="calc-helper__inputs">
+                  <label><span>Caracteres</span><input type="number" id="calc-car" min="0" placeholder="Ex: 360000"></label>
+                  <label><span>Laudas (2.100c)</span><input type="number" id="calc-lau" min="0" step="0.1" placeholder="Ex: 171"></label>
+                  <label><span>Páginas (1.800c)</span><input type="number" id="calc-pag" min="0" placeholder="Ex: 200"></label>
+                </div>
+                <button type="button" class="btn--ghost" id="calc-aplicar">Usar páginas calculadas →</button>
+              </div>
+            </details>
+          </div>
+
+          <!-- STEP impressao -->
+          <div class="step" data-step="impressao" hidden>
+            <h3 class="step__pergunta">Quer imprimir exemplares físicos?</h3>
+            <div class="radio-pills">
+              <label class="radio-pill"><input type="radio" name="quer-impressao" value="nao" checked> Não, só digital</label>
+              <label class="radio-pill"><input type="radio" name="quer-impressao" value="sim"> Sim, quero impressão</label>
+            </div>
+            <div id="impressao-detalhes" hidden style="margin-top:18px">
+              <div class="slider-group">
+                <label for="tiragem">Tiragem: <output id="out-tiragem">500</output> exemplares</label>
+                <input type="range" id="tiragem" min="20" max="500" step="10" value="500">
+                <p class="slider-hint">Para tiragens acima de 500 exemplares, fale com o consultor.</p>
+              </div>
+              <div class="slider-group">
+                <label>Papel</label>
+                <div class="radio-group">
+                  <label class="radio-pill"><input type="radio" name="papel" value="offset_75_sem_orelha" checked> offset 75g · sem orelha</label>
+                  <label class="radio-pill"><input type="radio" name="papel" value="polen_80_com_orelha"> pólen 80g · com orelha</label>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div class="slider-group">
-              <label for="slider-paginas">Páginas: <output id="out-paginas">200</output></label>
-              <input type="range" id="slider-paginas" min="80" max="400" step="10" value="200">
-              <p class="slider-hint">+ R$ 750 a cada 50 páginas acima de 200</p>
+          <!-- STEP lancamento -->
+          <div class="step" data-step="lancamento" hidden>
+            <h3 class="step__pergunta">Quer ações de lançamento?</h3>
+            <fieldset class="checks">
+              <label class="check"><input type="checkbox" data-svc="comunicacao"> Comunicação / assessoria <span class="check__preco">R$ 2.100</span></label>
+              <label class="check"><input type="checkbox" data-svc="kit_influenciador"> Kits para influenciadores (10 un) <span class="check__preco">R$ 750</span></label>
+              <label class="check"><input type="checkbox" data-svc="press_release"> Press release <span class="check__preco">R$ 210</span></label>
+              <label class="check"><input type="checkbox" data-svc="banner"> Material gráfico (banner, marca-página) <span class="check__preco">R$ 250</span></label>
+            </fieldset>
+          </div>
+
+          <!-- STEP distribuicao -->
+          <div class="step step--distribuicao" data-step="distribuicao" hidden>
+            <h3 class="step__pergunta" id="dist-titulo">Quer também distribuir e vender?</h3>
+            <p class="step__nota" id="dist-nota">Custo mensal estimado, baseado nos canais e volumes que você escolher. Armazenagem inclusa · cobrada por exemplar em estoque.</p>
+            <div class="radio-pills" id="dist-toggle-pills" style="margin-bottom:18px">
+              <label class="radio-pill"><input type="radio" name="quer-dist" value="nao" checked> Não, obrigado</label>
+              <label class="radio-pill"><input type="radio" name="quer-dist" value="sim"> Sim, quero distribuição</label>
+            </div>
+            <div id="distribuicao-detalhes" hidden>
+              <div class="dist-inputs">
+                <label class="input-group">
+                  <span>Estoque (exemplares)</span>
+                  <input type="number" id="dist-estoque" min="1" value="500">
+                </label>
+                <label class="input-group">
+                  <span>Preço de capa (R$)</span>
+                  <input type="number" id="dist-preco" min="0" step="0.01" placeholder="Ex: 65">
+                </label>
+              </div>
+              <div class="slider-group">
+                <label for="dist-vendas">Vendas/mês estimadas: <output id="out-dist-vendas">50</output></label>
+                <input type="range" id="dist-vendas" min="0" max="1000" step="10" value="50">
+              </div>
+              <fieldset class="checks">
+                <legend>Canais de venda</legend>
+                <label class="check"><input type="checkbox" id="dist-amazon"> Amazon Vendor</label>
+                <label class="check"><input type="checkbox" id="dist-ml"> Mercado Livre</label>
+              </fieldset>
+              <div class="slider-group" id="dist-mix-group" hidden style="margin-top:14px">
+                <label for="dist-mix">Mix: <output id="out-dist-mix">50</output>% Amazon · <output id="out-dist-mix-ml">50</output>% Mercado Livre</label>
+                <input type="range" id="dist-mix" min="0" max="100" step="5" value="50">
+              </div>
             </div>
           </div>
+
         </div>
 
-        <!-- Resumo -->
+        <!-- ── RESUMO ── -->
         <aside class="resumo" aria-live="polite">
           <h3 class="resumo__titulo">Sua proposta</h3>
-          <ul class="resumo__lista" id="resumo-lista"></ul>
-          <div class="resumo__total">
+          <ul class="resumo__lista" id="resumo-lista">
+            <li class="resumo__placeholder"><span>Comece respondendo ao lado, ou clique num pacote pronto acima.</span><span></span></li>
+          </ul>
+          <div class="resumo__total" id="resumo-total-bloco">
             <span class="resumo__total-label">Investimento</span>
             <span class="resumo__total-valor" id="resumo-total">R$ 0,00</span>
           </div>
-          <a class="btn btn--primary" id="btn-whatsapp-pacote" href="#" target="_blank" rel="noopener">Falar com consultor</a>
+          <div class="resumo__total resumo__total--mensal" id="resumo-mensal-bloco" hidden>
+            <span class="resumo__total-label">Custo mensal</span>
+            <span class="resumo__total-valor" id="resumo-mensal-valor">R$ 0,00</span>
+          </div>
+          <p class="resumo__sugestao" id="resumo-sugestao" hidden></p>
+          <p class="resumo__nota" id="resumo-nota" hidden>Investimento único + custo mensal recorrente da distribuição.</p>
+          <a class="btn btn--primary" id="btn-whatsapp" href="#" target="_blank" rel="noopener">Falar com consultor</a>
           <button type="button" class="btn btn--secondary" id="btn-pdf">Baixar proposta em PDF</button>
         </aside>
       </div>
     </section>
 
-    <!-- ── 3. SEPARADOR ── -->
-    <div class="ornament-rule"><span class="rule-line"></span><span class="rule-mark">◆</span><span class="rule-line"></span></div>
-
-    <!-- ── 4. SIMULADOR DE DISTRIBUIÇÃO ── -->
-    <section class="sim-distribuicao" aria-labelledby="sim-dist-titulo">
-      <h2 id="sim-dist-titulo" class="section-label">Já tem o livro pronto?</h2>
-      <p class="sim-distribuicao__subhead">Simule sua distribuição profissional na Amazon e Mercado Livre.</p>
-
-      <div class="sim-distribuicao__layout">
-        <div class="sim-distribuicao__inputs">
-          <label class="input-group">
-            <span>Preço de capa</span>
-            <input type="number" id="dist-preco" min="0" step="0.01" placeholder="Ex: 65,00">
-          </label>
-          <label class="input-group">
-            <span>Estoque armazenado</span>
-            <input type="number" id="dist-estoque" min="0" value="500">
-          </label>
-          <div class="slider-group">
-            <label for="dist-vendas">Vendas/mês estimadas: <output id="out-vendas">50</output></label>
-            <input type="range" id="dist-vendas" min="0" max="1000" step="10" value="50">
-          </div>
-
-          <fieldset class="canais">
-            <legend>Canais de venda</legend>
-            <label class="canal"><input type="checkbox" id="dist-amazon"> Amazon Vendor</label>
-            <label class="canal"><input type="checkbox" id="dist-ml"> Mercado Livre</label>
-            <p class="extra--info" style="margin-top:8px">Armazenagem inclusa · cobrada por exemplar em estoque</p>
-          </fieldset>
-
-          <div class="slider-group" id="grupo-mix" hidden>
-            <label for="dist-mix">Mix: <output id="out-mix">50</output>% Amazon · <output id="out-mix-ml">50</output>% Mercado Livre</label>
-            <input type="range" id="dist-mix" min="0" max="100" step="5" value="50">
-          </div>
-        </div>
-
-        <aside class="resumo-dist" aria-live="polite">
-          <h3 class="resumo__titulo">Custo mensal estimado</h3>
-          <ul class="resumo__lista" id="resumo-dist-lista"></ul>
-          <div class="resumo__total">
-            <span class="resumo__total-label">Total/mês</span>
-            <span class="resumo__total-valor" id="resumo-dist-total">R$ 0,00</span>
-          </div>
-          <p class="resumo-dist__nota">Valores simulados. Variam conforme volume real e condições da plataforma.</p>
-          <a class="btn btn--primary" id="btn-whatsapp-dist" href="#" target="_blank" rel="noopener">Conversar sobre distribuição</a>
-        </aside>
-      </div>
-    </section>
-
-    <!-- ── separador ── -->
-    <div class="ornament-rule"><span class="rule-line"></span><span class="rule-mark">▴</span><span class="rule-line"></span></div>
-
-    <!-- ── 5. SIMULADOR VÍDEO → LIVRO ── -->
-    <section class="sim-video" aria-labelledby="sim-video-titulo">
-      <h2 id="sim-video-titulo" class="section-label">Tem horas de vídeo gravado?</h2>
-      <p class="sim-distribuicao__subhead">Transformamos seus vídeos do YouTube em livro com IA + revisão editorial humana.</p>
-
-      <div class="sim-pacotes__layout">
-        <div class="sim-pacotes__config">
-
-          <div class="pacote-cards" role="radiogroup" aria-label="Escolha um pacote de vídeo">
-            <button type="button" class="pacote-card" role="radio" aria-checked="true" data-video-pacote="compilacao">
-              <span class="pacote-card__nome">Compilação</span>
-              <span class="pacote-card__preco">R$ 3.800</span>
-              <span class="pacote-card__headline">Ebook curto a partir de uma série pequena.</span>
-              <ul class="pacote-card__features">
-                <li>Até 5h de vídeo bruto</li>
-                <li>Ebook 40–60 páginas</li>
-                <li>1 revisão editorial</li>
-                <li>Manuscrito final em .docx</li>
-              </ul>
-            </button>
-
-            <button type="button" class="pacote-card pacote-card--featured" role="radio" aria-checked="false" data-video-pacote="coletanea">
-              <span class="pacote-card__badge">Mais escolhido</span>
-              <span class="pacote-card__nome">Coletânea</span>
-              <span class="pacote-card__preco">R$ 7.600</span>
-              <span class="pacote-card__headline">Livro a partir de uma série de pregações ou cursos.</span>
-              <ul class="pacote-card__features">
-                <li>Até 15h de vídeo bruto</li>
-                <li>Livro 100–150 páginas</li>
-                <li>2 revisões + diálogo com autor</li>
-                <li>Capítulos estruturados</li>
-              </ul>
-            </button>
-
-            <button type="button" class="pacote-card" role="radio" aria-checked="false" data-video-pacote="obra">
-              <span class="pacote-card__nome">Obra</span>
-              <span class="pacote-card__preco">R$ 12.700</span>
-              <span class="pacote-card__headline">Livro completo a partir de uma biblioteca grande.</span>
-              <ul class="pacote-card__features">
-                <li>Até 40h de vídeo bruto</li>
-                <li>Livro 200–300 páginas</li>
-                <li>Diálogo extenso (até 15h)</li>
-                <li>Curadoria + reorganização temática</li>
-              </ul>
-            </button>
-          </div>
-
-          <div class="customizacao">
-            <h3 class="customizacao__titulo">Personalize</h3>
-
-            <div class="slider-group">
-              <label for="vid-horas">Horas de vídeo bruto: <output id="out-vid-horas">5</output>h</label>
-              <input type="range" id="vid-horas" min="1" max="100" step="1" value="5">
-              <p class="slider-hint">+ R$ 250 por hora além do incluso no pacote</p>
-            </div>
-
-            <div class="slider-group">
-              <label for="vid-paginas">Páginas alvo do livro: <output id="out-vid-paginas">60</output></label>
-              <input type="range" id="vid-paginas" min="40" max="500" step="10" value="60">
-              <p class="slider-hint">+ R$ 850 a cada 50 páginas além do incluso</p>
-            </div>
-
-            <fieldset class="extras">
-              <legend>Adicional</legend>
-              <label class="extra"><input type="checkbox" id="vid-traducao"> Tradução do output (PT→EN ou outro) <span class="extra__preco">+30%</span></label>
-              <p class="extra extra--info">Direito autoral · vídeos do próprio autor ou de terceiros com autorização</p>
-            </fieldset>
-          </div>
-        </div>
-
-        <aside class="resumo" aria-live="polite" id="resumo-video-aside">
-          <h3 class="resumo__titulo">Sua proposta</h3>
-          <ul class="resumo__lista" id="resumo-video-lista"></ul>
-          <div class="resumo__total">
-            <span class="resumo__total-label">Investimento</span>
-            <span class="resumo__total-valor" id="resumo-video-total">R$ 3.800,00</span>
-          </div>
-          <p class="resumo-dist__nota">Inclui só o conteúdo escrito (vídeo → manuscrito). Para publicar como livro físico ou ebook, combine com um pacote editorial acima.</p>
-          <a class="btn btn--primary" id="btn-whatsapp-video" href="#" target="_blank" rel="noopener">Falar com consultor</a>
-        </aside>
-      </div>
-    </section>
-
-    <!-- ── 6. COMO FUNCIONA ── -->
+    <!-- ── COMO FUNCIONA ── -->
     <section class="como-funciona">
       <div class="ornament-rule"><span class="rule-line"></span><span class="rule-mark">§</span><span class="rule-line"></span></div>
       <h2 class="section-label">Como funciona</h2>
@@ -638,7 +686,7 @@
       </ol>
     </section>
 
-    <!-- ── 6. SOBRE ── -->
+    <!-- ── SOBRE ── -->
     <section class="sobre">
       <div class="ornament-rule"><span class="rule-line"></span><span class="rule-mark">†</span><span class="rule-line"></span></div>
       <h2 class="section-label">Sobre a Contemplatio</h2>
@@ -648,7 +696,6 @@
     </section>
   </main>
 
-  <!-- ── 7. FOOTER ── -->
   <footer class="rodape">
     <div class="rodape__brand">Contemplatio <span>— um projeto Convocação</span></div>
     <div class="rodape__contato">
@@ -662,363 +709,486 @@
 (function () {
   'use strict';
 
-  // ── Estado ─────────────────────────────────────────────────
+  // ── Estado unificado ────────────────────────────────────────
   const state = {
-    pacote: 'arvore',
-    extras: [],
-    tiragem: 500,
+    origem: null,                       // 'ideia' | 'manuscrito' | 'video' | 'impresso'
+    servicosEditoriais: [],
+    servicosLancamento: [],
     paginas: 200,
+    impressao: false,
+    tiragem: 500,
     papel: 'offset_75_sem_orelha',
+    vidHoras: 10,
+    vidPaginas: 120,
+    vidTraducao: false,
+    distAtivo: false,
+    distEstoque: 500,
+    distPreco: 0,
+    distVendas: 50,
+    distCanais: { amazon: false, ml: false },
+    distMix: 50,
   };
 
   // ── Refs ───────────────────────────────────────────────────
-  const $cards = document.querySelectorAll('.pacote-card');
-  const $extras = document.querySelectorAll('.extras input[data-extra]');
-  const $sliderTiragem = document.getElementById('slider-tiragem');
-  const $outTiragem = document.getElementById('out-tiragem');
-  const $grupoTiragem = document.getElementById('grupo-tiragem');
-  const $grupoPapel = document.getElementById('grupo-papel');
-  const $papelRadios = document.querySelectorAll('input[name="papel"]');
-  const $sliderPaginas = document.getElementById('slider-paginas');
+  const $steps = document.querySelectorAll('.step');
+  const $shortcuts = document.querySelectorAll('[data-shortcut]');
+  const $origemCards = document.querySelectorAll('[data-origem]');
+  const $svcEditChecks = document.querySelectorAll('[data-step="b-servicos"] input[data-svc]');
+  const $svcLancChecks = document.querySelectorAll('[data-step="lancamento"] input[data-svc]');
+  const $sliderPaginas = document.getElementById('paginas');
   const $outPaginas = document.getElementById('out-paginas');
+  const $calcCar = document.getElementById('calc-car');
+  const $calcLau = document.getElementById('calc-lau');
+  const $calcPag = document.getElementById('calc-pag');
+  const $calcAplicar = document.getElementById('calc-aplicar');
+  const $impressaoRadios = document.querySelectorAll('input[name="quer-impressao"]');
+  const $impressaoSub = document.getElementById('impressao-detalhes');
+  const $sliderTiragem = document.getElementById('tiragem');
+  const $outTiragem = document.getElementById('out-tiragem');
+  const $papelRadios = document.querySelectorAll('input[name="papel"]');
+  const $vidHoras = document.getElementById('vid-horas');
+  const $outVidHoras = document.getElementById('out-vid-horas');
+  const $vidPaginas = document.getElementById('vid-paginas');
+  const $outVidPaginas = document.getElementById('out-vid-paginas');
+  const $vidTraducao = document.getElementById('vid-traducao');
+  const $distRadios = document.querySelectorAll('input[name="quer-dist"]');
+  const $distSub = document.getElementById('distribuicao-detalhes');
+  const $distEstoque = document.getElementById('dist-estoque');
+  const $distPreco = document.getElementById('dist-preco');
+  const $distVendas = document.getElementById('dist-vendas');
+  const $outDistVendas = document.getElementById('out-dist-vendas');
+  const $distAmazon = document.getElementById('dist-amazon');
+  const $distMl = document.getElementById('dist-ml');
+  const $distMix = document.getElementById('dist-mix');
+  const $outDistMix = document.getElementById('out-dist-mix');
+  const $outDistMixMl = document.getElementById('out-dist-mix-ml');
+  const $distMixGroup = document.getElementById('dist-mix-group');
   const $resumoLista = document.getElementById('resumo-lista');
   const $resumoTotal = document.getElementById('resumo-total');
-  const $btnWa = document.getElementById('btn-whatsapp-pacote');
+  const $resumoMensalBloco = document.getElementById('resumo-mensal-bloco');
+  const $resumoMensalValor = document.getElementById('resumo-mensal-valor');
+  const $resumoSugestao = document.getElementById('resumo-sugestao');
+  const $resumoNota = document.getElementById('resumo-nota');
+  const $btnWa = document.getElementById('btn-whatsapp');
   const $btnPdf = document.getElementById('btn-pdf');
+  const $distTitulo = document.getElementById('dist-titulo');
 
-  // ── Render do resumo ───────────────────────────────────────
-  const PACOTE_LABELS = { semente: 'Semente', arvore: 'Árvore', floresta: 'Floresta' };
-  const EXTRA_LABELS = { ghostwriting: 'Ghostwriting', edicao_profunda: 'Edição profunda', audiolivro: 'Audiolivro' };
+  // ── Visibilidade dos steps por origem ───────────────────────
+  function visibleSteps() {
+    const o = state.origem;
+    if (!o) return ['origem'];
+    if (o === 'impresso') return ['origem', 'distribuicao'];
+    if (o === 'video')    return ['origem', 'c-video', 'b-servicos', 'b-tamanho', 'impressao', 'lancamento', 'distribuicao'];
+    return                       ['origem', 'b-servicos', 'b-tamanho', 'impressao', 'lancamento', 'distribuicao'];
+  }
 
-  function renderResumo() {
-    const items = [];
-    items.push({ label: PACOTE_LABELS[state.pacote] + ' (editorial)', valor: Calc.formatBRL(Calc.editorialBase(state.pacote)) });
-
-    state.extras.forEach(e => {
-      items.push({ label: EXTRA_LABELS[e], valor: Calc.formatBRL(Calc.extrasTotal([e])) });
+  function aplicaVisibilidadeSteps() {
+    const visible = visibleSteps();
+    $steps.forEach(s => {
+      s.hidden = !visible.includes(s.dataset.step);
     });
 
-    if (state.paginas !== 200) {
-      const delta = Calc.deltaPaginas(state.paginas);
-      if (delta > 0) {
-        items.push({ label: `Editorial extra (${state.paginas}pp)`, valor: '+ ' + Calc.formatBRL(delta) });
+    // Ajusta título da distribuição conforme caminho
+    if (state.origem === 'impresso') {
+      $distTitulo.textContent = 'Distribuição na Amazon e Mercado Livre';
+      // Nesse caminho, distribuição entra ativada por padrão
+      if (!state.distAtivo) {
+        state.distAtivo = true;
+        $distRadios.forEach(r => { r.checked = (r.value === 'sim'); });
+        $distSub.hidden = false;
       }
+    } else {
+      $distTitulo.textContent = 'Quer também distribuir e vender?';
+    }
+  }
+
+  // ── Cálculo & render ────────────────────────────────────────
+  const ORIGEM_LABEL = {
+    ideia:      'Tenho uma ideia',
+    manuscrito: 'Tenho manuscrito',
+    video:      'Tenho vídeos',
+    impresso:   'Já tenho o livro pronto',
+  };
+
+  function autoVideoPacote(horas) {
+    if (horas <= 5) return 'compilacao';
+    if (horas <= 15) return 'coletanea';
+    return 'obra';
+  }
+
+  function computar() {
+    const items = [];
+    let totalUnico = 0;
+    let totalMensal = 0;
+
+    // Caminho video: cobra pacote vídeo→livro
+    if (state.origem === 'video') {
+      const pkg = autoVideoPacote(state.vidHoras);
+      const subVideo = Calc.totalVideo({ pacote: pkg, horas: state.vidHoras, paginas: state.vidPaginas, traducao: state.vidTraducao });
+      totalUnico += subVideo;
+      const pkgInfo = Calc.videoPacote(pkg);
+      let label = `Vídeo→Livro · ${pkgInfo.nome}`;
+      if (state.vidHoras > pkgInfo.horas || state.vidPaginas > pkgInfo.paginas) {
+        label += ` (${state.vidHoras}h, ${state.vidPaginas}pp)`;
+      }
+      if (state.vidTraducao) label += ' + tradução';
+      items.push({ label, valor: Calc.formatBRL(subVideo) });
+    } else if (state.origem === 'ideia') {
+      // Auto-incluir ghostwriting no caminho ideia (não está no servicosEditoriais por padrão)
+      // (O cliente pode desmarcar)
     }
 
-    if (state.pacote === 'arvore' || state.pacote === 'floresta') {
+    // Serviços editoriais (manuscrito/ideia/video continuação)
+    state.servicosEditoriais.forEach(svc => {
+      const preco = Calc.precoServico(svc, state.paginas);
+      if (preco > 0) {
+        items.push({ label: Calc.servicoLabel(svc), valor: Calc.formatBRL(preco) });
+        totalUnico += preco;
+      }
+    });
+
+    // Impressão
+    if (state.impressao) {
       const imp = Calc.priceImpressao(state.tiragem, state.paginas, state.papel);
       const papelLabel = state.papel === 'polen_80_com_orelha' ? 'pólen 80g' : 'offset 75g';
       items.push({
         label: `Impressão ${state.tiragem} ex × ${state.paginas}pp · ${papelLabel}`,
         valor: Calc.formatBRL(imp),
       });
+      totalUnico += imp;
     }
 
-    $resumoLista.innerHTML = items.map(i =>
-      `<li><span>${i.label}</span><span>${i.valor}</span></li>`
-    ).join('');
+    // Serviços de lançamento
+    state.servicosLancamento.forEach(svc => {
+      const preco = Calc.precoServico(svc);
+      if (preco > 0) {
+        items.push({ label: Calc.servicoLabel(svc), valor: Calc.formatBRL(preco) });
+        totalUnico += preco;
+      }
+    });
 
-    $resumoTotal.textContent = Calc.formatBRL(Calc.totalPacote(state));
+    // Distribuição (mensal)
+    if (state.distAtivo) {
+      const r = Calc.custoDistribuicao({
+        precoCapa: state.distPreco,
+        estoque: state.distEstoque,
+        vendas: state.distVendas,
+        canais: { armazenagem: true, amazon: state.distCanais.amazon, ml: state.distCanais.ml },
+        mixAmazon: state.distMix,
+      });
+      totalMensal = r.total;
+    }
 
-    // WhatsApp link
-    const msg = Calc.mensagemPacote(state);
-    $btnWa.href = 'https://wa.me/5511267359290?text=' + encodeURIComponent(msg);
+    return { items, totalUnico, totalMensal };
   }
 
-  // ── Tiragem/Papel visibility ────────────────────────────────
-  function atualizaVisibilidadeTiragem() {
-    const visivel = state.pacote === 'arvore' || state.pacote === 'floresta';
-    $grupoTiragem.style.display = visivel ? '' : 'none';
-    if ($grupoPapel) $grupoPapel.style.display = visivel ? '' : 'none';
+  function detectaPacoteEquivalente(items, totalUnico) {
+    // Se a combinação bate com o conjunto exato de um pacote pronto, sugere
+    const editorialKeys = state.servicosEditoriais.slice().sort().join(',');
+    const launchKeys = state.servicosLancamento.slice().sort().join(',');
+    const sementeEd = ['capa','diagramacao','ebook','isbn','revisao'].sort().join(',');
+    const florestaLanch = ['banner','comunicacao','kit_influenciador','press_release'].sort().join(',');
+    const padraoImpressao = state.impressao && state.tiragem === 500 && state.paginas === 200 && state.papel === 'offset_75_sem_orelha';
+
+    if (state.origem === 'manuscrito' || state.origem === 'ideia') {
+      if (editorialKeys === sementeEd && !state.impressao && launchKeys === '') {
+        return { nome: 'Semente', preco: 4550 };
+      }
+      if (editorialKeys === sementeEd && padraoImpressao && launchKeys === '') {
+        return { nome: 'Árvore', preco: 14554 };
+      }
+      if (editorialKeys === sementeEd && padraoImpressao && launchKeys === florestaLanch) {
+        return { nome: 'Floresta', preco: 17054 };
+      }
+    }
+    return null;
+  }
+
+  function render() {
+    const { items, totalUnico, totalMensal } = computar();
+
+    // Resumo lista
+    if (items.length === 0) {
+      $resumoLista.innerHTML = '<li class="resumo__placeholder"><span>Comece respondendo ao lado, ou clique num pacote pronto acima.</span><span></span></li>';
+    } else {
+      $resumoLista.innerHTML = items.map(i =>
+        `<li><span>${i.label}</span><span>${i.valor}</span></li>`
+      ).join('');
+    }
+
+    $resumoTotal.textContent = Calc.formatBRL(totalUnico);
+
+    if (totalMensal > 0) {
+      $resumoMensalBloco.hidden = false;
+      $resumoMensalValor.textContent = Calc.formatBRL(totalMensal) + '/mês';
+      $resumoNota.hidden = false;
+    } else {
+      $resumoMensalBloco.hidden = true;
+      $resumoNota.hidden = true;
+    }
+
+    // Sugestão de pacote
+    const sug = detectaPacoteEquivalente(items, totalUnico);
+    if (sug) {
+      $resumoSugestao.hidden = false;
+      $resumoSugestao.textContent = `Esta combinação equivale ao Pacote ${sug.nome}.`;
+    } else {
+      $resumoSugestao.hidden = true;
+    }
+
+    // WhatsApp
+    const msg = montaMensagemWhatsApp(items, totalUnico, totalMensal);
+    $btnWa.href = 'https://wa.me/5511267359290?text=' + encodeURIComponent(msg);
+
+    salvar();
+  }
+
+  function montaMensagemWhatsApp(items, totalUnico, totalMensal) {
+    const linhas = [];
+    linhas.push('Olá! Vim pelo simulador da Contemplatio.');
+    linhas.push('');
+    if (state.origem) linhas.push('Ponto de partida: ' + ORIGEM_LABEL[state.origem]);
+    linhas.push('');
+    items.forEach(i => linhas.push(`• ${i.label}: ${i.valor}`));
+    linhas.push('');
+    linhas.push(`💰 Investimento único: ${Calc.formatBRL(totalUnico)}`);
+    if (totalMensal > 0) linhas.push(`📦 Custo mensal estimado: ${Calc.formatBRL(totalMensal)}`);
+    linhas.push('');
+    linhas.push('Gostaria de conversar sobre meu projeto.');
+    return linhas.join('\n');
+  }
+
+  // ── Atalhos de pacote ───────────────────────────────────────
+  function aplicaAtalho(key) {
+    const p = Calc.PACOTE_INCLUI[key];
+    if (!p) return;
+    state.origem = 'manuscrito';
+    state.servicosEditoriais = p.servicos.slice();
+    state.servicosLancamento = p.lancamento.slice();
+    state.paginas = p.impressao ? p.impressao.paginas : 200;
+    state.impressao = !!p.impressao;
+    if (p.impressao) {
+      state.tiragem = p.impressao.tiragem;
+      state.papel = p.impressao.papel;
+    }
+    sincronizarUI();
+    aplicaVisibilidadeSteps();
+    render();
+    document.querySelector('.wizard-layout').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function sincronizarUI() {
+    // Origem cards
+    $origemCards.forEach(c => c.setAttribute('aria-selected', String(c.dataset.origem === state.origem)));
+    // Editorial checks
+    $svcEditChecks.forEach(cb => { cb.checked = state.servicosEditoriais.includes(cb.dataset.svc); });
+    // Lançamento checks
+    $svcLancChecks.forEach(cb => { cb.checked = state.servicosLancamento.includes(cb.dataset.svc); });
+    // Páginas
+    $sliderPaginas.value = state.paginas;
+    $outPaginas.textContent = state.paginas;
+    // Impressão
+    $impressaoRadios.forEach(r => { r.checked = (r.value === (state.impressao ? 'sim' : 'nao')); });
+    $impressaoSub.hidden = !state.impressao;
+    $sliderTiragem.value = state.tiragem;
+    $outTiragem.textContent = state.tiragem;
+    $papelRadios.forEach(r => { r.checked = (r.value === state.papel); });
+    // Vídeo
+    $vidHoras.value = state.vidHoras;
+    $outVidHoras.textContent = state.vidHoras;
+    $vidPaginas.value = state.vidPaginas;
+    $outVidPaginas.textContent = state.vidPaginas;
+    $vidTraducao.checked = !!state.vidTraducao;
+    // Distribuição
+    $distRadios.forEach(r => { r.checked = (r.value === (state.distAtivo ? 'sim' : 'nao')); });
+    $distSub.hidden = !state.distAtivo;
+    $distEstoque.value = state.distEstoque;
+    $distPreco.value = state.distPreco || '';
+    $distVendas.value = state.distVendas;
+    $outDistVendas.textContent = state.distVendas;
+    $distAmazon.checked = state.distCanais.amazon;
+    $distMl.checked = state.distCanais.ml;
+    $distMix.value = state.distMix;
+    $outDistMix.textContent = state.distMix;
+    $outDistMixMl.textContent = 100 - state.distMix;
+    $distMixGroup.hidden = !(state.distCanais.amazon && state.distCanais.ml);
   }
 
   // ── Listeners ──────────────────────────────────────────────
-  $cards.forEach((card, idx) => {
-    // tabindex: roving — ativo (-1) nos não-selecionados, 0 no selecionado (padrão WAI-ARIA radio)
-    card.setAttribute('tabindex', card.getAttribute('aria-checked') === 'true' ? '0' : '-1');
+  $shortcuts.forEach(btn => {
+    btn.addEventListener('click', () => aplicaAtalho(btn.dataset.shortcut));
+  });
 
+  $origemCards.forEach(card => {
     card.addEventListener('click', () => {
-      state.pacote = card.dataset.pacote;
-      $cards.forEach(c => {
-        const sel = (c === card);
-        c.setAttribute('aria-checked', String(sel));
-        c.setAttribute('tabindex', sel ? '0' : '-1');
-      });
-      card.focus();
-      atualizaVisibilidadeTiragem();
-      renderResumo();
-    });
+      state.origem = card.dataset.origem;
 
-    card.addEventListener('keydown', (e) => {
-      if (e.key === ' ' || e.key === 'Enter') {
-        e.preventDefault();
-        card.click();
-      } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-        e.preventDefault();
-        const next = $cards[(idx + 1) % $cards.length];
-        next.click();
-      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-        e.preventDefault();
-        const prev = $cards[(idx - 1 + $cards.length) % $cards.length];
-        prev.click();
+      // Auto-marcar ghostwriting se origem == 'ideia'
+      if (state.origem === 'ideia' && !state.servicosEditoriais.includes('ghostwriting')) {
+        state.servicosEditoriais.push('ghostwriting');
       }
+
+      $origemCards.forEach(c => c.setAttribute('aria-selected', String(c.dataset.origem === state.origem)));
+      sincronizarUI();
+      aplicaVisibilidadeSteps();
+      render();
     });
   });
 
-  $extras.forEach(cb => {
+  $svcEditChecks.forEach(cb => {
     cb.addEventListener('change', () => {
-      const key = cb.dataset.extra;
-      if (cb.checked) state.extras.push(key);
-      else state.extras = state.extras.filter(e => e !== key);
-      renderResumo();
+      const svc = cb.dataset.svc;
+      if (cb.checked) state.servicosEditoriais.push(svc);
+      else state.servicosEditoriais = state.servicosEditoriais.filter(s => s !== svc);
+      render();
+    });
+  });
+
+  $svcLancChecks.forEach(cb => {
+    cb.addEventListener('change', () => {
+      const svc = cb.dataset.svc;
+      if (cb.checked) state.servicosLancamento.push(svc);
+      else state.servicosLancamento = state.servicosLancamento.filter(s => s !== svc);
+      render();
+    });
+  });
+
+  $sliderPaginas.addEventListener('input', () => {
+    state.paginas = parseInt($sliderPaginas.value, 10);
+    $outPaginas.textContent = state.paginas;
+    render();
+  });
+
+  // Calculadora caracteres/laudas/páginas
+  const LAUDA = 2100;
+  const PAG_DIAG = 1800;
+  function syncCalc(source, value) {
+    const v = parseFloat(value) || 0;
+    if (source === 'car') {
+      $calcLau.value = v ? (v / LAUDA).toFixed(1) : '';
+      $calcPag.value = v ? Math.round(v / PAG_DIAG) : '';
+    } else if (source === 'lau') {
+      $calcCar.value = v ? Math.round(v * LAUDA) : '';
+      $calcPag.value = v ? Math.round((v * LAUDA) / PAG_DIAG) : '';
+    } else if (source === 'pag') {
+      $calcCar.value = v ? Math.round(v * PAG_DIAG) : '';
+      $calcLau.value = v ? ((v * PAG_DIAG) / LAUDA).toFixed(1) : '';
+    }
+  }
+  $calcCar.addEventListener('input', e => syncCalc('car', e.target.value));
+  $calcLau.addEventListener('input', e => syncCalc('lau', e.target.value));
+  $calcPag.addEventListener('input', e => syncCalc('pag', e.target.value));
+  $calcAplicar.addEventListener('click', () => {
+    const pag = parseInt($calcPag.value, 10);
+    if (pag && pag >= 80 && pag <= 400) {
+      state.paginas = pag;
+      $sliderPaginas.value = pag;
+      $outPaginas.textContent = pag;
+      render();
+    } else if (pag) {
+      alert('A calculadora aceita páginas entre 80 e 400. Para tamanhos diferentes, fale com o consultor.');
+    }
+  });
+
+  $impressaoRadios.forEach(r => {
+    r.addEventListener('change', () => {
+      if (r.checked) {
+        state.impressao = (r.value === 'sim');
+        $impressaoSub.hidden = !state.impressao;
+        render();
+      }
     });
   });
 
   $sliderTiragem.addEventListener('input', () => {
     state.tiragem = parseInt($sliderTiragem.value, 10);
     $outTiragem.textContent = state.tiragem;
-    renderResumo();
-  });
-
-  $sliderPaginas.addEventListener('input', () => {
-    state.paginas = parseInt($sliderPaginas.value, 10);
-    $outPaginas.textContent = state.paginas;
-    renderResumo();
+    render();
   });
 
   $papelRadios.forEach(r => {
     r.addEventListener('change', () => {
-      if (r.checked) { state.papel = r.value; renderResumo(); }
+      if (r.checked) { state.papel = r.value; render(); }
     });
+  });
+
+  $vidHoras.addEventListener('input', () => {
+    state.vidHoras = parseInt($vidHoras.value, 10);
+    $outVidHoras.textContent = state.vidHoras;
+    render();
+  });
+  $vidPaginas.addEventListener('input', () => {
+    state.vidPaginas = parseInt($vidPaginas.value, 10);
+    $outVidPaginas.textContent = state.vidPaginas;
+    render();
+  });
+  $vidTraducao.addEventListener('change', () => {
+    state.vidTraducao = $vidTraducao.checked;
+    render();
+  });
+
+  $distRadios.forEach(r => {
+    r.addEventListener('change', () => {
+      if (r.checked) {
+        state.distAtivo = (r.value === 'sim');
+        $distSub.hidden = !state.distAtivo;
+        render();
+      }
+    });
+  });
+
+  $distEstoque.addEventListener('input', () => {
+    state.distEstoque = parseInt($distEstoque.value, 10) || 0;
+    render();
+  });
+  $distPreco.addEventListener('input', () => {
+    state.distPreco = parseFloat($distPreco.value) || 0;
+    render();
+  });
+  $distVendas.addEventListener('input', () => {
+    state.distVendas = parseInt($distVendas.value, 10) || 0;
+    $outDistVendas.textContent = state.distVendas;
+    render();
+  });
+  $distAmazon.addEventListener('change', () => {
+    state.distCanais.amazon = $distAmazon.checked;
+    $distMixGroup.hidden = !(state.distCanais.amazon && state.distCanais.ml);
+    render();
+  });
+  $distMl.addEventListener('change', () => {
+    state.distCanais.ml = $distMl.checked;
+    $distMixGroup.hidden = !(state.distCanais.amazon && state.distCanais.ml);
+    render();
+  });
+  $distMix.addEventListener('input', () => {
+    state.distMix = parseInt($distMix.value, 10);
+    $outDistMix.textContent = state.distMix;
+    $outDistMixMl.textContent = 100 - state.distMix;
+    render();
   });
 
   $btnPdf.addEventListener('click', () => window.print());
 
-  // ─────────────────────────────────────────────────────────
-  // SIMULADOR DE DISTRIBUIÇÃO
-  // ─────────────────────────────────────────────────────────
-  const distState = {
-    precoCapa: 0,
-    estoque: 500,
-    vendas: 50,
-    canais: { armazenagem: true, amazon: false, ml: false },
-    mixAmazon: 50,
-  };
-
-  const $distPreco = document.getElementById('dist-preco');
-  const $distEstoque = document.getElementById('dist-estoque');
-  const $distVendas = document.getElementById('dist-vendas');
-  const $outVendas = document.getElementById('out-vendas');
-  const $distAmazon = document.getElementById('dist-amazon');
-  const $distMl = document.getElementById('dist-ml');
-  const $distMix = document.getElementById('dist-mix');
-  const $outMix = document.getElementById('out-mix');
-  const $outMixMl = document.getElementById('out-mix-ml');
-  const $grupoMix = document.getElementById('grupo-mix');
-  const $resumoDistLista = document.getElementById('resumo-dist-lista');
-  const $resumoDistTotal = document.getElementById('resumo-dist-total');
-  const $btnWaDist = document.getElementById('btn-whatsapp-dist');
-
-  function atualizaVisibilidadeMix() {
-    $grupoMix.hidden = !(distState.canais.amazon && distState.canais.ml);
-  }
-
-  function renderDist() {
-    const r = Calc.custoDistribuicao(distState);
-    const items = [];
-    if (distState.canais.armazenagem) {
-      items.push({ label: `Armazenagem (${distState.estoque} ex.)`, valor: Calc.formatBRL(r.armazenagem) });
-    }
-    if (distState.canais.amazon) {
-      items.push({ label: 'Amazon Vendor', valor: Calc.formatBRL(r.amazon) });
-    }
-    if (distState.canais.ml) {
-      items.push({ label: 'Mercado Livre', valor: Calc.formatBRL(r.ml) });
-    }
-    if (items.length === 0) {
-      $resumoDistLista.innerHTML = '<li><span style="color:var(--muted);font-style:italic">Marque os canais ao lado para simular.</span><span></span></li>';
-    } else {
-      $resumoDistLista.innerHTML = items.map(i =>
-        `<li><span>${i.label}</span><span>${i.valor}</span></li>`
-      ).join('');
-    }
-    $resumoDistTotal.textContent = Calc.formatBRL(r.total);
-
-    const msg = Calc.mensagemDistribuicao(distState);
-    $btnWaDist.href = 'https://wa.me/5511267359290?text=' + encodeURIComponent(msg);
-  }
-
-  $distPreco.addEventListener('input', () => {
-    distState.precoCapa = parseFloat($distPreco.value) || 0;
-    renderDist();
-  });
-  $distEstoque.addEventListener('input', () => {
-    distState.estoque = parseInt($distEstoque.value, 10) || 0;
-    renderDist();
-  });
-  $distVendas.addEventListener('input', () => {
-    distState.vendas = parseInt($distVendas.value, 10);
-    $outVendas.textContent = distState.vendas;
-    renderDist();
-  });
-  $distAmazon.addEventListener('change', () => {
-    distState.canais.amazon = $distAmazon.checked;
-    atualizaVisibilidadeMix();
-    renderDist();
-  });
-  $distMl.addEventListener('change', () => {
-    distState.canais.ml = $distMl.checked;
-    atualizaVisibilidadeMix();
-    renderDist();
-  });
-  $distMix.addEventListener('input', () => {
-    distState.mixAmazon = parseInt($distMix.value, 10);
-    $outMix.textContent = distState.mixAmazon;
-    $outMixMl.textContent = 100 - distState.mixAmazon;
-    renderDist();
-  });
-
-  // ─────────────────────────────────────────────────────────
-  // SIMULADOR VÍDEO → LIVRO
-  // ─────────────────────────────────────────────────────────
-  const videoState = {
-    pacote: 'compilacao',
-    horas: 5,
-    paginas: 60,
-    traducao: false,
-  };
-
-  const $vidCards = document.querySelectorAll('[data-video-pacote]');
-  const $vidHoras = document.getElementById('vid-horas');
-  const $outVidHoras = document.getElementById('out-vid-horas');
-  const $vidPaginas = document.getElementById('vid-paginas');
-  const $outVidPaginas = document.getElementById('out-vid-paginas');
-  const $vidTraducao = document.getElementById('vid-traducao');
-  const $resumoVideoLista = document.getElementById('resumo-video-lista');
-  const $resumoVideoTotal = document.getElementById('resumo-video-total');
-  const $btnWaVideo = document.getElementById('btn-whatsapp-video');
-
-  function renderVideo() {
-    const base = Calc.videoPacote(videoState.pacote);
-    if (!base) return;
-    const items = [];
-    items.push({ label: base.nome, valor: Calc.formatBRL(base.preco) });
-    const dh = Calc.deltaVideoHoras(videoState.pacote, videoState.horas);
-    if (dh > 0) items.push({ label: `+${videoState.horas - base.horas}h de vídeo`, valor: '+ ' + Calc.formatBRL(dh) });
-    const dp = Calc.deltaVideoPaginas(videoState.pacote, videoState.paginas);
-    if (dp > 0) items.push({ label: `${videoState.paginas} páginas`, valor: '+ ' + Calc.formatBRL(dp) });
-    if (videoState.traducao) {
-      const subtotal = base.preco + dh + dp;
-      items.push({ label: `Tradução (+30%)`, valor: '+ ' + Calc.formatBRL(subtotal * 0.30) });
-    }
-    $resumoVideoLista.innerHTML = items.map(i =>
-      `<li><span>${i.label}</span><span>${i.valor}</span></li>`
-    ).join('');
-    $resumoVideoTotal.textContent = Calc.formatBRL(Calc.totalVideo(videoState));
-    const msg = Calc.mensagemVideo(videoState);
-    $btnWaVideo.href = 'https://wa.me/5511267359290?text=' + encodeURIComponent(msg);
-  }
-
-  function setVideoPacote(key, opts) {
-    opts = opts || {};
-    const base = Calc.videoPacote(key);
-    if (!base) return;
-    videoState.pacote = key;
-    $vidCards.forEach(c => {
-      const sel = (c.dataset.videoPacote === key);
-      c.setAttribute('aria-checked', String(sel));
-    });
-    if (opts.resetSliders !== false) {
-      videoState.horas = base.horas;
-      videoState.paginas = base.paginas;
-      $vidHoras.value = base.horas;
-      $outVidHoras.textContent = base.horas;
-      $vidPaginas.value = base.paginas;
-      $outVidPaginas.textContent = base.paginas;
-    }
-    renderVideo();
-  }
-
-  $vidCards.forEach(card => {
-    card.addEventListener('click', () => setVideoPacote(card.dataset.videoPacote));
-    card.addEventListener('keydown', (e) => {
-      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); card.click(); }
-    });
-  });
-  $vidHoras.addEventListener('input', () => {
-    videoState.horas = parseInt($vidHoras.value, 10);
-    $outVidHoras.textContent = videoState.horas;
-    renderVideo();
-  });
-  $vidPaginas.addEventListener('input', () => {
-    videoState.paginas = parseInt($vidPaginas.value, 10);
-    $outVidPaginas.textContent = videoState.paginas;
-    renderVideo();
-  });
-  $vidTraducao.addEventListener('change', () => {
-    videoState.traducao = $vidTraducao.checked;
-    renderVideo();
-  });
-
-  // ─────────────────────────────────────────────────────────
-  // PERSISTÊNCIA
-  // ─────────────────────────────────────────────────────────
-  const STORAGE_KEY = 'contemplatio_simulador_v1';
-
+  // ── Persistência ───────────────────────────────────────────
+  const STORAGE_KEY = 'contemplatio_simulador_v2';
   function salvar() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ state, distState, videoState }));
-    } catch (e) { /* localStorage indisponível, segue */ }
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+    catch (e) {}
   }
-
   function carregar() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return;
       const saved = JSON.parse(raw);
-      if (saved.state) {
-        Object.assign(state, saved.state);
-        if (!state.papel) state.papel = 'offset_75_sem_orelha';
-        $cards.forEach(c => c.setAttribute('aria-checked', String(c.dataset.pacote === state.pacote)));
-        $extras.forEach(cb => { cb.checked = state.extras.indexOf(cb.dataset.extra) !== -1; });
-        $sliderTiragem.value = state.tiragem; $outTiragem.textContent = state.tiragem;
-        $sliderPaginas.value = state.paginas; $outPaginas.textContent = state.paginas;
-        $papelRadios.forEach(r => { r.checked = (r.value === state.papel); });
-      }
-      if (saved.distState) {
-        Object.assign(distState, saved.distState);
-        $distPreco.value = distState.precoCapa || '';
-        $distEstoque.value = distState.estoque;
-        $distVendas.value = distState.vendas; $outVendas.textContent = distState.vendas;
-        $distAmazon.checked = distState.canais.amazon;
-        $distMl.checked = distState.canais.ml;
-        // armazenagem é sempre inclusa — não tem checkbox
-        distState.canais.armazenagem = true;
-        $distMix.value = distState.mixAmazon;
-        $outMix.textContent = distState.mixAmazon;
-        $outMixMl.textContent = 100 - distState.mixAmazon;
-      }
-      if (saved.videoState) {
-        Object.assign(videoState, saved.videoState);
-        $vidCards.forEach(c => c.setAttribute('aria-checked', String(c.dataset.videoPacote === videoState.pacote)));
-        $vidHoras.value = videoState.horas; $outVidHoras.textContent = videoState.horas;
-        $vidPaginas.value = videoState.paginas; $outVidPaginas.textContent = videoState.paginas;
-        $vidTraducao.checked = !!videoState.traducao;
-      }
-    } catch (e) { /* JSON inválido, ignora */ }
+      Object.assign(state, saved);
+    } catch (e) {}
   }
-
-  // Salvar disparado por listener no document — pega TODOS os change/input
-  document.addEventListener('input', salvar);
-  document.addEventListener('change', salvar);
 
   // ── Init ───────────────────────────────────────────────────
   carregar();
-  atualizaVisibilidadeTiragem();
-  atualizaVisibilidadeMix();
-  renderResumo();
-  renderDist();
-  renderVideo();
+  sincronizarUI();
+  aplicaVisibilidadeSteps();
+  render();
 })();
 </script>
 </body>

@@ -76,11 +76,48 @@
     return Calc.custoImpressao(tiragem, paginas, papel) * PRINT_MARGEM;
   };
 
-  // ── Componente editorial fixo de cada pacote ──────────────
+  // ── Preços à la carte (cliente seleciona individualmente) ──
+  const PRECOS_SERVICO = {
+    ghostwriting:      { preco: 6000, label: 'Ghostwriting' },
+    edicao_profunda:   { preco: 2250, label: 'Edição profunda' },
+    capa:              { preco: 850,  label: 'Capa personalizada' },
+    isbn:              { preco: 500,  label: 'ISBN e cadastros legais' },
+    ebook:             { preco: 250,  label: 'Adaptação para ebook (Amazon)' },
+    audiolivro:        { preco: 4500, label: 'Audiolivro' },
+    comunicacao:       { preco: 2100, label: 'Comunicação / assessoria' },
+    kit_influenciador: { preco: 750,  label: 'Kits para influenciadores (10 un)' },
+    press_release:     { preco: 210,  label: 'Press release' },
+    banner:            { preco: 250,  label: 'Material gráfico (banner, marca-página)' },
+  };
+  const PRECOS_POR_PAGINA = {
+    revisao:     { preco_lauda: 9, label: 'Revisão profissional' },
+    diagramacao: { preco_lauda: 6, label: 'Diagramação' },
+  };
+
+  Calc.servicoLabel = function (svc) {
+    return (PRECOS_SERVICO[svc] || PRECOS_POR_PAGINA[svc] || {}).label || svc;
+  };
+
+  Calc.precoServico = function (svc, paginas) {
+    if (PRECOS_POR_PAGINA[svc]) return (paginas || 200) * PRECOS_POR_PAGINA[svc].preco_lauda;
+    return (PRECOS_SERVICO[svc] || {}).preco || 0;
+  };
+
+  Calc.SERVICOS_EDITORIAIS = ['ghostwriting', 'revisao', 'edicao_profunda', 'capa', 'diagramacao', 'isbn', 'ebook', 'audiolivro'];
+  Calc.SERVICOS_LANCAMENTO = ['comunicacao', 'kit_influenciador', 'press_release', 'banner'];
+
+  // ── Componente editorial fixo de cada pacote (legado) ──────
   const EDITORIAL_BASE = {
-    semente:  4550,  // só editorial (revisão, capa, diagramação, ISBN, ebook)
-    arvore:   4550,  // mesmo editorial
-    floresta: 7050,  // editorial 4550 + comunicação 2500
+    semente:  4550,
+    arvore:   4550,
+    floresta: 7050,
+  };
+
+  // Pacotes-atalho: o que cada um inclui
+  Calc.PACOTE_INCLUI = {
+    semente: { servicos: ['revisao', 'capa', 'diagramacao', 'isbn', 'ebook'], impressao: false, lancamento: [] },
+    arvore:  { servicos: ['revisao', 'capa', 'diagramacao', 'isbn', 'ebook'], impressao: { tiragem: 500, paginas: 200, papel: 'offset_75_sem_orelha' }, lancamento: [] },
+    floresta:{ servicos: ['revisao', 'capa', 'diagramacao', 'isbn', 'ebook'], impressao: { tiragem: 500, paginas: 200, papel: 'offset_75_sem_orelha' }, lancamento: ['comunicacao', 'kit_influenciador', 'press_release', 'banner'] },
   };
 
   Calc.editorialBase = function (key) {
