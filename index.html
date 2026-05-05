@@ -329,6 +329,7 @@
       .pacote-cards,
       .customizacao,
       .sim-distribuicao,
+      .sim-video,
       .ornament-rule,
       .como-funciona,
       .sobre,
@@ -518,7 +519,93 @@
       </div>
     </section>
 
-    <!-- ── 5. COMO FUNCIONA ── -->
+    <!-- ── separador ── -->
+    <div class="ornament-rule"><span class="rule-line"></span><span class="rule-mark">▴</span><span class="rule-line"></span></div>
+
+    <!-- ── 5. SIMULADOR VÍDEO → LIVRO ── -->
+    <section class="sim-video" aria-labelledby="sim-video-titulo">
+      <h2 id="sim-video-titulo" class="section-label">Tem horas de vídeo gravado?</h2>
+      <p class="sim-distribuicao__subhead">Transformamos seus vídeos do YouTube em livro com IA + revisão editorial humana.</p>
+
+      <div class="sim-pacotes__layout">
+        <div class="sim-pacotes__config">
+
+          <div class="pacote-cards" role="radiogroup" aria-label="Escolha um pacote de vídeo">
+            <button type="button" class="pacote-card" role="radio" aria-checked="true" data-video-pacote="compilacao">
+              <span class="pacote-card__nome">Compilação</span>
+              <span class="pacote-card__preco">R$ 3.800</span>
+              <span class="pacote-card__headline">Ebook curto a partir de uma série pequena.</span>
+              <ul class="pacote-card__features">
+                <li>Até 5h de vídeo bruto</li>
+                <li>Ebook 40–60 páginas</li>
+                <li>1 revisão editorial</li>
+                <li>Manuscrito final em .docx</li>
+              </ul>
+            </button>
+
+            <button type="button" class="pacote-card pacote-card--featured" role="radio" aria-checked="false" data-video-pacote="coletanea">
+              <span class="pacote-card__badge">Mais escolhido</span>
+              <span class="pacote-card__nome">Coletânea</span>
+              <span class="pacote-card__preco">R$ 7.600</span>
+              <span class="pacote-card__headline">Livro a partir de uma série de pregações ou cursos.</span>
+              <ul class="pacote-card__features">
+                <li>Até 15h de vídeo bruto</li>
+                <li>Livro 100–150 páginas</li>
+                <li>2 revisões + diálogo com autor</li>
+                <li>Capítulos estruturados</li>
+              </ul>
+            </button>
+
+            <button type="button" class="pacote-card" role="radio" aria-checked="false" data-video-pacote="obra">
+              <span class="pacote-card__nome">Obra</span>
+              <span class="pacote-card__preco">R$ 12.700</span>
+              <span class="pacote-card__headline">Livro completo a partir de uma biblioteca grande.</span>
+              <ul class="pacote-card__features">
+                <li>Até 40h de vídeo bruto</li>
+                <li>Livro 200–300 páginas</li>
+                <li>Diálogo extenso (até 15h)</li>
+                <li>Curadoria + reorganização temática</li>
+              </ul>
+            </button>
+          </div>
+
+          <div class="customizacao">
+            <h3 class="customizacao__titulo">Personalize</h3>
+
+            <div class="slider-group">
+              <label for="vid-horas">Horas de vídeo bruto: <output id="out-vid-horas">5</output>h</label>
+              <input type="range" id="vid-horas" min="1" max="100" step="1" value="5">
+              <p class="slider-hint">+ R$ 250 por hora além do incluso no pacote</p>
+            </div>
+
+            <div class="slider-group">
+              <label for="vid-paginas">Páginas alvo do livro: <output id="out-vid-paginas">60</output></label>
+              <input type="range" id="vid-paginas" min="40" max="500" step="10" value="60">
+              <p class="slider-hint">+ R$ 850 a cada 50 páginas além do incluso</p>
+            </div>
+
+            <fieldset class="extras">
+              <legend>Adicional</legend>
+              <label class="extra"><input type="checkbox" id="vid-traducao"> Tradução do output (PT→EN ou outro) <span class="extra__preco">+30%</span></label>
+              <p class="extra extra--info">Direito autoral · vídeos do próprio autor ou de terceiros com autorização</p>
+            </fieldset>
+          </div>
+        </div>
+
+        <aside class="resumo" aria-live="polite" id="resumo-video-aside">
+          <h3 class="resumo__titulo">Sua proposta</h3>
+          <ul class="resumo__lista" id="resumo-video-lista"></ul>
+          <div class="resumo__total">
+            <span class="resumo__total-label">Investimento</span>
+            <span class="resumo__total-valor" id="resumo-video-total">R$ 3.800,00</span>
+          </div>
+          <p class="resumo-dist__nota">Inclui só o conteúdo escrito (vídeo → manuscrito). Para publicar como livro físico ou ebook, combine com um pacote editorial acima.</p>
+          <a class="btn btn--primary" id="btn-whatsapp-video" href="#" target="_blank" rel="noopener">Falar com consultor</a>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ── 6. COMO FUNCIONA ── -->
     <section class="como-funciona">
       <div class="ornament-rule"><span class="rule-line"></span><span class="rule-mark">§</span><span class="rule-line"></span></div>
       <h2 class="section-label">Como funciona</h2>
@@ -761,13 +848,95 @@
   });
 
   // ─────────────────────────────────────────────────────────
+  // SIMULADOR VÍDEO → LIVRO
+  // ─────────────────────────────────────────────────────────
+  const videoState = {
+    pacote: 'compilacao',
+    horas: 5,
+    paginas: 60,
+    traducao: false,
+  };
+
+  const $vidCards = document.querySelectorAll('[data-video-pacote]');
+  const $vidHoras = document.getElementById('vid-horas');
+  const $outVidHoras = document.getElementById('out-vid-horas');
+  const $vidPaginas = document.getElementById('vid-paginas');
+  const $outVidPaginas = document.getElementById('out-vid-paginas');
+  const $vidTraducao = document.getElementById('vid-traducao');
+  const $resumoVideoLista = document.getElementById('resumo-video-lista');
+  const $resumoVideoTotal = document.getElementById('resumo-video-total');
+  const $btnWaVideo = document.getElementById('btn-whatsapp-video');
+
+  function renderVideo() {
+    const base = Calc.videoPacote(videoState.pacote);
+    if (!base) return;
+    const items = [];
+    items.push({ label: base.nome, valor: Calc.formatBRL(base.preco) });
+    const dh = Calc.deltaVideoHoras(videoState.pacote, videoState.horas);
+    if (dh > 0) items.push({ label: `+${videoState.horas - base.horas}h de vídeo`, valor: '+ ' + Calc.formatBRL(dh) });
+    const dp = Calc.deltaVideoPaginas(videoState.pacote, videoState.paginas);
+    if (dp > 0) items.push({ label: `${videoState.paginas} páginas`, valor: '+ ' + Calc.formatBRL(dp) });
+    if (videoState.traducao) {
+      const subtotal = base.preco + dh + dp;
+      items.push({ label: `Tradução (+30%)`, valor: '+ ' + Calc.formatBRL(subtotal * 0.30) });
+    }
+    $resumoVideoLista.innerHTML = items.map(i =>
+      `<li><span>${i.label}</span><span>${i.valor}</span></li>`
+    ).join('');
+    $resumoVideoTotal.textContent = Calc.formatBRL(Calc.totalVideo(videoState));
+    const msg = Calc.mensagemVideo(videoState);
+    $btnWaVideo.href = 'https://wa.me/5511267359290?text=' + encodeURIComponent(msg);
+  }
+
+  function setVideoPacote(key, opts) {
+    opts = opts || {};
+    const base = Calc.videoPacote(key);
+    if (!base) return;
+    videoState.pacote = key;
+    $vidCards.forEach(c => {
+      const sel = (c.dataset.videoPacote === key);
+      c.setAttribute('aria-checked', String(sel));
+    });
+    if (opts.resetSliders !== false) {
+      videoState.horas = base.horas;
+      videoState.paginas = base.paginas;
+      $vidHoras.value = base.horas;
+      $outVidHoras.textContent = base.horas;
+      $vidPaginas.value = base.paginas;
+      $outVidPaginas.textContent = base.paginas;
+    }
+    renderVideo();
+  }
+
+  $vidCards.forEach(card => {
+    card.addEventListener('click', () => setVideoPacote(card.dataset.videoPacote));
+    card.addEventListener('keydown', (e) => {
+      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); card.click(); }
+    });
+  });
+  $vidHoras.addEventListener('input', () => {
+    videoState.horas = parseInt($vidHoras.value, 10);
+    $outVidHoras.textContent = videoState.horas;
+    renderVideo();
+  });
+  $vidPaginas.addEventListener('input', () => {
+    videoState.paginas = parseInt($vidPaginas.value, 10);
+    $outVidPaginas.textContent = videoState.paginas;
+    renderVideo();
+  });
+  $vidTraducao.addEventListener('change', () => {
+    videoState.traducao = $vidTraducao.checked;
+    renderVideo();
+  });
+
+  // ─────────────────────────────────────────────────────────
   // PERSISTÊNCIA
   // ─────────────────────────────────────────────────────────
   const STORAGE_KEY = 'contemplatio_simulador_v1';
 
   function salvar() {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ state, distState }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ state, distState, videoState }));
     } catch (e) { /* localStorage indisponível, segue */ }
   }
 
@@ -796,6 +965,13 @@
         $outMix.textContent = distState.mixAmazon;
         $outMixMl.textContent = 100 - distState.mixAmazon;
       }
+      if (saved.videoState) {
+        Object.assign(videoState, saved.videoState);
+        $vidCards.forEach(c => c.setAttribute('aria-checked', String(c.dataset.videoPacote === videoState.pacote)));
+        $vidHoras.value = videoState.horas; $outVidHoras.textContent = videoState.horas;
+        $vidPaginas.value = videoState.paginas; $outVidPaginas.textContent = videoState.paginas;
+        $vidTraducao.checked = !!videoState.traducao;
+      }
     } catch (e) { /* JSON inválido, ignora */ }
   }
 
@@ -809,6 +985,7 @@
   atualizaVisibilidadeMix();
   renderResumo();
   renderDist();
+  renderVideo();
 })();
 </script>
 </body>

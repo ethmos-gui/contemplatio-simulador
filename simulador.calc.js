@@ -163,5 +163,66 @@
     return linhas.join('\n');
   };
 
+  // ─── Vídeo → Livro ──────────────────────────────────────────
+  const VIDEO_PACOTE = {
+    compilacao: { preco: 3800,  horas: 5,  paginas: 60,  nome: 'Compilação' },
+    coletanea:  { preco: 7600,  horas: 15, paginas: 150, nome: 'Coletânea' },
+    obra:       { preco: 12700, horas: 40, paginas: 300, nome: 'Obra' },
+  };
+
+  const VIDEO_HORA_EXTRA = 250;
+  const VIDEO_BLOCO_50PP_EXTRA = 850;
+  const VIDEO_TRADUCAO_PCT = 0.30;
+
+  Calc.videoPacote = function (key) {
+    return VIDEO_PACOTE[key] || null;
+  };
+
+  Calc.deltaVideoHoras = function (pacote, horas) {
+    const base = VIDEO_PACOTE[pacote];
+    if (!base) return 0;
+    return Math.max(0, horas - base.horas) * VIDEO_HORA_EXTRA;
+  };
+
+  Calc.deltaVideoPaginas = function (pacote, paginas) {
+    const base = VIDEO_PACOTE[pacote];
+    if (!base) return 0;
+    return Math.max(0, Math.ceil((paginas - base.paginas) / 50)) * VIDEO_BLOCO_50PP_EXTRA;
+  };
+
+  Calc.totalVideo = function (state) {
+    const base = VIDEO_PACOTE[state.pacote];
+    if (!base) return 0;
+    const dh = Calc.deltaVideoHoras(state.pacote, state.horas);
+    const dp = Calc.deltaVideoPaginas(state.pacote, state.paginas);
+    const subtotal = base.preco + dh + dp;
+    const traducao = state.traducao ? subtotal * VIDEO_TRADUCAO_PCT : 0;
+    return subtotal + traducao;
+  };
+
+  Calc.mensagemVideo = function (s) {
+    const base = VIDEO_PACOTE[s.pacote];
+    if (!base) return '';
+    const linhas = [];
+    linhas.push('Olá! Vim pelo simulador "Vídeo → Livro".');
+    linhas.push('');
+    linhas.push(`📹 Pacote: ${base.nome} (${Calc.formatBRL(base.preco)})`);
+    linhas.push(`⏱️  Vídeo bruto: ${s.horas}h (incluso até ${base.horas}h)`);
+    const dh = Calc.deltaVideoHoras(s.pacote, s.horas);
+    if (dh > 0) linhas.push(`+ Horas extras: ${s.horas - base.horas}h × R$ 250 = ${Calc.formatBRL(dh)}`);
+    linhas.push(`📄 Páginas alvo: ${s.paginas} (incluso até ${base.paginas})`);
+    const dp = Calc.deltaVideoPaginas(s.pacote, s.paginas);
+    if (dp > 0) linhas.push(`+ Páginas extras: ${Calc.formatBRL(dp)}`);
+    if (s.traducao) {
+      const subtotal = base.preco + dh + dp;
+      linhas.push(`+ Tradução do output: +30% sobre ${Calc.formatBRL(subtotal)} = ${Calc.formatBRL(subtotal * VIDEO_TRADUCAO_PCT)}`);
+    }
+    linhas.push('');
+    linhas.push(`💰 Total: ${Calc.formatBRL(Calc.totalVideo(s))}`);
+    linhas.push('');
+    linhas.push('Gostaria de conversar sobre transformar meus vídeos em livro.');
+    return linhas.join('\n');
+  };
+
   global.Calc = Calc;
 })(typeof window !== 'undefined' ? window : globalThis);
