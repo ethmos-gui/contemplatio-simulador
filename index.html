@@ -171,6 +171,18 @@
     .slider-group output { color: var(--gold); font-weight: 600; }
     .slider-hint { font-size: 12px; color: var(--muted); margin-top: 4px; font-style: italic; }
 
+    .radio-group { display: flex; flex-direction: column; gap: 6px; }
+    .radio-pill {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 10px; font-size: 14px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--bg);
+      border-radius: 2px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .radio-pill:hover { border-color: var(--gold-light); }
+    .radio-pill input[type="radio"] { width: 14px; height: 14px; accent-color: var(--gold); }
+    .radio-pill:has(input:checked) { border-color: var(--gold); background: var(--card-bg); }
+
     /* ── Resumo ── */
     .resumo, .resumo-dist {
       background: var(--card-bg);
@@ -444,8 +456,16 @@
 
             <div class="slider-group" id="grupo-tiragem">
               <label for="slider-tiragem">Tiragem: <output id="out-tiragem">500</output> exemplares</label>
-              <input type="range" id="slider-tiragem" min="300" max="2000" step="50" value="500">
-              <p class="slider-hint">+ R$ 20,31 por exemplar acima de 500</p>
+              <input type="range" id="slider-tiragem" min="20" max="2000" step="10" value="500">
+              <p class="slider-hint">Cotação real do gráfico × 1,35 (margem)</p>
+            </div>
+
+            <div class="slider-group" id="grupo-papel">
+              <label>Papel</label>
+              <div class="radio-group">
+                <label class="radio-pill"><input type="radio" name="papel" value="offset_75_sem_orelha" checked> offset 75g · sem orelha</label>
+                <label class="radio-pill"><input type="radio" name="papel" value="polen_80_com_orelha"> pólen 80g · com orelha</label>
+              </div>
             </div>
 
             <div class="slider-group">
@@ -648,6 +668,7 @@
     extras: [],
     tiragem: 500,
     paginas: 200,
+    papel: 'offset_75_sem_orelha',
   };
 
   // ── Refs ───────────────────────────────────────────────────
@@ -656,6 +677,8 @@
   const $sliderTiragem = document.getElementById('slider-tiragem');
   const $outTiragem = document.getElementById('out-tiragem');
   const $grupoTiragem = document.getElementById('grupo-tiragem');
+  const $grupoPapel = document.getElementById('grupo-papel');
+  const $papelRadios = document.querySelectorAll('input[name="papel"]');
   const $sliderPaginas = document.getElementById('slider-paginas');
   const $outPaginas = document.getElementById('out-paginas');
   const $resumoLista = document.getElementById('resumo-lista');
@@ -669,24 +692,25 @@
 
   function renderResumo() {
     const items = [];
-    items.push({ label: PACOTE_LABELS[state.pacote], valor: Calc.formatBRL(Calc.packageBase(state.pacote)) });
+    items.push({ label: PACOTE_LABELS[state.pacote] + ' (editorial)', valor: Calc.formatBRL(Calc.editorialBase(state.pacote)) });
 
     state.extras.forEach(e => {
       items.push({ label: EXTRA_LABELS[e], valor: Calc.formatBRL(Calc.extrasTotal([e])) });
     });
 
-    if ((state.pacote === 'arvore' || state.pacote === 'floresta') && state.tiragem !== 500) {
-      const delta = Calc.deltaTiragem(state.tiragem);
-      items.push({
-        label: `Tiragem ${state.tiragem} ex.`,
-        valor: delta > 0 ? '+ ' + Calc.formatBRL(delta) : '—',
-      });
-    }
     if (state.paginas !== 200) {
       const delta = Calc.deltaPaginas(state.paginas);
+      if (delta > 0) {
+        items.push({ label: `Editorial extra (${state.paginas}pp)`, valor: '+ ' + Calc.formatBRL(delta) });
+      }
+    }
+
+    if (state.pacote === 'arvore' || state.pacote === 'floresta') {
+      const imp = Calc.priceImpressao(state.tiragem, state.paginas, state.papel);
+      const papelLabel = state.papel === 'polen_80_com_orelha' ? 'pólen 80g' : 'offset 75g';
       items.push({
-        label: `${state.paginas} páginas`,
-        valor: delta > 0 ? '+ ' + Calc.formatBRL(delta) : '—',
+        label: `Impressão ${state.tiragem} ex × ${state.paginas}pp · ${papelLabel}`,
+        valor: Calc.formatBRL(imp),
       });
     }
 
@@ -701,10 +725,11 @@
     $btnWa.href = 'https://wa.me/5511267359290?text=' + encodeURIComponent(msg);
   }
 
-  // ── Tiragem visibility ─────────────────────────────────────
+  // ── Tiragem/Papel visibility ────────────────────────────────
   function atualizaVisibilidadeTiragem() {
     const visivel = state.pacote === 'arvore' || state.pacote === 'floresta';
     $grupoTiragem.style.display = visivel ? '' : 'none';
+    if ($grupoPapel) $grupoPapel.style.display = visivel ? '' : 'none';
   }
 
   // ── Listeners ──────────────────────────────────────────────
@@ -759,6 +784,12 @@
     state.paginas = parseInt($sliderPaginas.value, 10);
     $outPaginas.textContent = state.paginas;
     renderResumo();
+  });
+
+  $papelRadios.forEach(r => {
+    r.addEventListener('change', () => {
+      if (r.checked) { state.papel = r.value; renderResumo(); }
+    });
   });
 
   $btnPdf.addEventListener('click', () => window.print());
@@ -947,10 +978,12 @@
       const saved = JSON.parse(raw);
       if (saved.state) {
         Object.assign(state, saved.state);
+        if (!state.papel) state.papel = 'offset_75_sem_orelha';
         $cards.forEach(c => c.setAttribute('aria-checked', String(c.dataset.pacote === state.pacote)));
         $extras.forEach(cb => { cb.checked = state.extras.indexOf(cb.dataset.extra) !== -1; });
         $sliderTiragem.value = state.tiragem; $outTiragem.textContent = state.tiragem;
         $sliderPaginas.value = state.paginas; $outPaginas.textContent = state.paginas;
+        $papelRadios.forEach(r => { r.checked = (r.value === state.papel); });
       }
       if (saved.distState) {
         Object.assign(distState, saved.distState);

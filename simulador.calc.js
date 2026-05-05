@@ -4,14 +4,96 @@
 
   const Calc = {};
 
-  const PACKAGE_BASE = {
-    semente:  4550,
-    arvore:   14700,
-    floresta: 17200,
+  // ── Tabela de impressão (custo bruto sem margem) ───────────
+  const PRINT_TABLE = {
+    offset_75_sem_orelha: {
+      20:  { 100: 240.40,  150: 313.60,  200: 386.60,  250: 459.80  },
+      50:  { 100: 579.50,  150: 759.50,  200: 940.00,  250: 1120.00 },
+      100: { 100: 1077.00, 150: 1431.00, 200: 1784.00, 250: 2138.00 },
+      200: { 100: 1956.00, 150: 2596.00, 200: 3238.00, 250: 3878.00 },
+      500: { 100: 4495.00, 150: 5955.00, 200: 7410.00, 250: 8870.00 },
+    },
+    polen_80_com_orelha: {
+      20:  { 100: 268.20,  150: 348.80,  200: 429.40,  250: 510.00  },
+      50:  { 100: 646.50,  150: 845.50,  200: 1044.50, 250: 1243.50 },
+      100: { 100: 1191.00, 150: 1577.00, 200: 1962.00, 250: 2348.00 },
+      200: { 100: 2166.00, 150: 2868.00, 200: 3568.00, 250: 4270.00 },
+      500: { 100: 4980.00, 150: 6575.00, 200: 8165.00, 250: 9760.00 },
+    },
+  };
+  const PRINT_TIRAGEMS = [20, 50, 100, 200, 500];
+  const PRINT_PAGINAS  = [100, 150, 200, 250];
+  const PRINT_MARGEM = 1.35;
+
+  Calc.PAPEL_LABELS = {
+    offset_75_sem_orelha: 'offset 75g · sem orelha',
+    polen_80_com_orelha:  'pólen 80g · com orelha',
   };
 
+  function findBracket(val, ladder) {
+    if (val <= ladder[0]) return [ladder[0], ladder[0], 0];
+    if (val >= ladder[ladder.length - 1]) return [ladder[ladder.length - 1], ladder[ladder.length - 1], 0];
+    for (let i = 0; i < ladder.length - 1; i++) {
+      if (val >= ladder[i] && val <= ladder[i + 1]) {
+        return [ladder[i], ladder[i + 1], (val - ladder[i]) / (ladder[i + 1] - ladder[i])];
+      }
+    }
+    return [ladder[ladder.length - 1], ladder[ladder.length - 1], 0];
+  }
+
+  function bilinearLookup(tiragem, paginas, tbl) {
+    // Acima de 500 ex: extrapola linearmente baseado na faixa 200→500
+    if (tiragem > 500) {
+      const v500 = bilinearLookup(500, paginas, tbl);
+      const v200 = bilinearLookup(200, paginas, tbl);
+      const margUnit = (v500 - v200) / 300;
+      return v500 + (tiragem - 500) * margUnit;
+    }
+    // Acima de 250 pp: extrapola da faixa 200→250
+    if (paginas > 250) {
+      const v250 = bilinearLookup(tiragem, 250, tbl);
+      const v200 = bilinearLookup(tiragem, 200, tbl);
+      const margPp = (v250 - v200) / 50;
+      return v250 + (paginas - 250) * margPp;
+    }
+    const [t1, t2, ti] = findBracket(tiragem, PRINT_TIRAGEMS);
+    const [p1, p2, pi] = findBracket(paginas, PRINT_PAGINAS);
+    const v11 = tbl[t1][p1], v12 = tbl[t1][p2];
+    const v21 = tbl[t2][p1], v22 = tbl[t2][p2];
+    const v1 = v11 * (1 - pi) + v12 * pi;
+    const v2 = v21 * (1 - pi) + v22 * pi;
+    return v1 * (1 - ti) + v2 * ti;
+  }
+
+  Calc.custoImpressao = function (tiragem, paginas, papel) {
+    const tbl = PRINT_TABLE[papel] || PRINT_TABLE.offset_75_sem_orelha;
+    if (tiragem < 20) return 0;
+    const pp = paginas < 100 ? 100 : paginas;
+    return bilinearLookup(tiragem, pp, tbl);
+  };
+
+  Calc.priceImpressao = function (tiragem, paginas, papel) {
+    return Calc.custoImpressao(tiragem, paginas, papel) * PRINT_MARGEM;
+  };
+
+  // ── Componente editorial fixo de cada pacote ──────────────
+  const EDITORIAL_BASE = {
+    semente:  4550,  // só editorial (revisão, capa, diagramação, ISBN, ebook)
+    arvore:   4550,  // mesmo editorial
+    floresta: 7050,  // editorial 4550 + comunicação 2500
+  };
+
+  Calc.editorialBase = function (key) {
+    return EDITORIAL_BASE[key] || 0;
+  };
+
+  // packageBase = preço default exibido nos cards (500 ex × 200 pp × offset 75g s/orelha)
   Calc.packageBase = function (key) {
-    return PACKAGE_BASE[key] || 0;
+    const ed = EDITORIAL_BASE[key] || 0;
+    if (key === 'arvore' || key === 'floresta') {
+      return ed + Calc.priceImpressao(500, 200, 'offset_75_sem_orelha');
+    }
+    return ed;
   };
 
   const EXTRAS = {
@@ -35,13 +117,18 @@
   const PACOTES_COM_TIRAGEM = ['arvore', 'floresta'];
 
   Calc.totalPacote = function (state) {
-    const base = Calc.packageBase(state.pacote);
+    const ed = Calc.editorialBase(state.pacote);
     const extras = Calc.extrasTotal(state.extras);
-    const tiragem = PACOTES_COM_TIRAGEM.indexOf(state.pacote) >= 0
-      ? Calc.deltaTiragem(state.tiragem)
-      : 0;
     const paginas = Calc.deltaPaginas(state.paginas);
-    return base + extras + tiragem + paginas;
+    let imp = 0;
+    if (PACOTES_COM_TIRAGEM.indexOf(state.pacote) >= 0) {
+      imp = Calc.priceImpressao(
+        state.tiragem,
+        state.paginas,
+        state.papel || 'offset_75_sem_orelha'
+      );
+    }
+    return ed + extras + paginas + imp;
   };
 
   const DIST = {
@@ -103,30 +190,27 @@
     linhas.push('');
 
     const baseLabel = PACOTE_NOMES[s.pacote] || s.pacote;
-    linhas.push(`📦 Pacote: ${baseLabel} (${Calc.formatBRL(Calc.packageBase(s.pacote))})`);
+    linhas.push(`📦 Pacote: ${baseLabel}`);
+    linhas.push(`   Editorial: ${Calc.formatBRL(Calc.editorialBase(s.pacote))}`);
 
     (s.extras || []).forEach(e => {
       const nome = EXTRA_NOMES[e] || e;
       const valor = Calc.extrasTotal([e]);
-      linhas.push(`+ ${nome} (${Calc.formatBRL(valor)})`);
+      linhas.push(`   + ${nome}: ${Calc.formatBRL(valor)}`);
     });
-
-    if (PACOTES_COM_TIRAGEM.indexOf(s.pacote) >= 0 && s.tiragem !== 500) {
-      const delta = Calc.deltaTiragem(s.tiragem);
-      if (delta > 0) {
-        linhas.push(`+ Tiragem: ${s.tiragem} ex. (+ ${Calc.formatBRL(delta)})`);
-      } else {
-        linhas.push(`+ Tiragem: ${s.tiragem} ex.`);
-      }
-    }
 
     if (s.paginas !== 200) {
       const delta = Calc.deltaPaginas(s.paginas);
       if (delta > 0) {
-        linhas.push(`+ Páginas: ${s.paginas} (+ ${Calc.formatBRL(delta)})`);
-      } else {
-        linhas.push(`+ Páginas: ${s.paginas}`);
+        linhas.push(`   + Editorial extra (${s.paginas}pp): ${Calc.formatBRL(delta)}`);
       }
+    }
+
+    if (PACOTES_COM_TIRAGEM.indexOf(s.pacote) >= 0) {
+      const papelKey = s.papel || 'offset_75_sem_orelha';
+      const imp = Calc.priceImpressao(s.tiragem, s.paginas, papelKey);
+      linhas.push(`📚 Impressão: ${s.tiragem} ex. × ${s.paginas} pp · ${Calc.PAPEL_LABELS[papelKey]}`);
+      linhas.push(`   ${Calc.formatBRL(imp)}`);
     }
 
     linhas.push('');
