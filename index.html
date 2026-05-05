@@ -20,6 +20,7 @@
       --gold-light:  #C9A84C;
       --coral:       #FA452E;
       --coral-dark:  #D8341E;
+      --coral-tint:  #FFF5F2;
       --card-bg:     #FFFFFF;
       --border:      #E8E0D4;
       --rule:        #D4C8B8;
@@ -62,6 +63,20 @@
       color: var(--gold);
       margin-bottom: 12px;
       text-align: center;
+    }
+
+    .section-heading {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 34px;
+      font-weight: 600;
+      color: var(--heading);
+      text-align: center;
+      letter-spacing: -0.005em;
+      margin-bottom: 28px;
+      line-height: 1.15;
+    }
+    @media (max-width: 639px) {
+      .section-heading { font-size: 26px; margin-bottom: 20px; }
     }
 
     /* ── Hero ── */
@@ -117,13 +132,23 @@
     }
     .pacote-card:hover { border-color: var(--gold-light); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
     .pacote-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-    .pacote-card--featured { border-color: var(--gold-light); border-width: 1.5px; }
+    .pacote-card--featured {
+      border-color: var(--gold-light); border-width: 1.5px;
+      box-shadow: 0 4px 24px rgba(139,105,20,0.10);
+      transform: translateY(-4px);
+    }
+    .pacote-card--featured:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 28px rgba(139,105,20,0.14);
+    }
     .pacote-card__badge {
-      position: absolute; top: -1px; left: 50%;
+      position: absolute; top: -11px; left: 50%;
       transform: translateX(-50%);
       background: var(--gold); color: var(--bg);
-      font-size: 10px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
-      padding: 3px 12px;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+      padding: 5px 14px;
+      white-space: nowrap;
     }
     .pacote-card__nome { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--heading); margin-top: 4px; }
     .pacote-card--featured .pacote-card__nome { margin-top: 12px; }
@@ -159,8 +184,26 @@
       to   { opacity: 1; transform: translateY(0); }
     }
     .step__pergunta {
-      font-size: 22px; font-weight: 500;
-      margin-bottom: 16px; color: var(--heading);
+      font-size: 26px; font-weight: 600;
+      margin-bottom: 18px; color: var(--heading);
+      letter-spacing: -0.005em;
+      position: relative;
+    }
+    .step__pergunta::before {
+      content: attr(data-num);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 16px;
+      color: var(--gold-light);
+      letter-spacing: 0.08em;
+      display: block;
+      margin-bottom: 4px;
+      line-height: 1;
+    }
+    @media (max-width: 639px) {
+      .step__pergunta { font-size: 21px; }
+      .step__pergunta::before { font-size: 13px; }
     }
     .step__nota { font-size: 13px; color: var(--muted); font-style: italic; margin-top: 12px; line-height: 1.5; }
     .step__hint { font-size: 13px; color: var(--muted); margin-top: 6px; font-style: italic; }
@@ -187,8 +230,34 @@
     .step-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.05); }
     .step-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
     .step-card[aria-selected="true"] { border-color: var(--coral); background: var(--card-bg); box-shadow: 0 4px 16px rgba(250,69,46,0.10); }
-    .step-card--accent[aria-selected="true"] { border-color: var(--coral); background: #FFF5F2; }
-    .step-card__icon { font-size: 24px; line-height: 1; }
+    .step-card--accent {
+      border-color: var(--coral);
+      background: var(--coral-tint);
+      position: relative;
+    }
+    .step-card--accent::after {
+      content: 'caminho rápido';
+      position: absolute;
+      top: 10px; right: 12px;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 9px; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--coral);
+    }
+    .step-card--accent:hover { border-color: var(--coral-dark); }
+    .step-card--accent[aria-selected="true"] {
+      border-color: var(--coral);
+      background: var(--coral-tint);
+      box-shadow: 0 4px 16px rgba(250,69,46,0.14);
+    }
+    .step-card__icon {
+      display: inline-flex;
+      width: 28px; height: 28px;
+      color: var(--coral);
+      margin-bottom: 4px;
+    }
+    .step-card__icon svg { width: 100%; height: 100%; display: block; }
+    .step-card[aria-selected="true"] .step-card__icon { color: var(--coral-dark); }
     .step-card__titulo { font-size: 16px; font-weight: 600; color: var(--heading); }
     .step-card__desc { font-size: 13px; color: var(--muted); line-height: 1.45; }
 
@@ -298,12 +367,31 @@
     .resumo__lista li span:last-child { color: var(--gold); font-weight: 600; white-space: nowrap; }
     .resumo__lista li.resumo__placeholder span { color: var(--muted); font-style: italic; font-weight: 400; }
     .resumo__total {
-      display: flex; justify-content: space-between; align-items: baseline;
-      padding: 12px 0; border-top: 1.5px solid var(--rule); margin-bottom: 8px;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 18px 0 14px; border-top: 1.5px solid var(--rule);
+      margin-bottom: 8px; text-align: center;
     }
-    .resumo__total-label { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
-    .resumo__total-valor { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--heading); }
-    .resumo__total--mensal .resumo__total-valor { font-size: 22px; color: var(--gold); }
+    .resumo__total-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.20em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+    }
+    .resumo__total-valor {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 40px; font-weight: 600; color: var(--heading);
+      letter-spacing: -0.01em; line-height: 1;
+    }
+    .resumo__total::after {
+      content: 'investimento único';
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic; font-size: 13px;
+      color: var(--muted); margin-top: 6px;
+    }
+    .resumo__total--mensal {
+      padding-top: 8px;
+      border-top: 1px dashed var(--border);
+    }
+    .resumo__total--mensal .resumo__total-valor { font-size: 26px; color: var(--gold); }
+    .resumo__total--mensal::after { content: 'recorrente · mensal'; }
     .resumo__sugestao {
       font-size: 13px; color: var(--ideal); font-style: italic;
       padding: 10px 12px; background: #F0F4F1;
@@ -373,8 +461,10 @@
       }
       .resumo__titulo { font-size: 16px; padding-bottom: 6px; margin-bottom: 8px; }
       .resumo__lista { display: none; }
-      .resumo__total { padding: 4px 0; border: none; margin-bottom: 4px; }
+      .resumo__total { padding: 4px 0; border: none; margin-bottom: 4px; flex-direction: row; gap: 10px; align-items: baseline; }
+      .resumo__total::after { display: none; }
       .resumo__total-valor { font-size: 22px; }
+      .resumo__total--mensal .resumo__total-valor { font-size: 18px; }
       .resumo__nota, .resumo__sugestao { display: none; }
       .btn { font-size: 14px; padding: 10px 14px; }
       .btn--secondary { display: none; }
@@ -405,6 +495,10 @@
       #btn-whatsapp, #btn-pdf {
         display: none !important;
       }
+      .section-heading { font-size: 16pt; margin-bottom: 8pt; }
+      .step__pergunta::before,
+      .step-card--accent::after,
+      .resumo__total::after { display: none; }
       .wizard-layout { display: block; }
       .resumo {
         position: static !important;
@@ -502,25 +596,56 @@
 
           <!-- STEP origem -->
           <div class="step" data-step="origem">
-            <h3 class="step__pergunta">Em que ponto você está?</h3>
+            <h3 class="step__pergunta" data-num="1">Em que ponto você está?</h3>
             <div class="step-cards" role="radiogroup" aria-label="Origem">
               <button type="button" class="step-card" role="radio" aria-selected="false" data-origem="ideia">
-                <span class="step-card__icon">💡</span>
+                <span class="step-card__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 4c-1 8-5 13-12 16l-2-2C9 11 14 6 20 4z"/>
+                    <path d="M6 18l-3 3"/>
+                    <path d="M14 8l-6 6"/>
+                  </svg>
+                </span>
                 <span class="step-card__titulo">Tenho uma ideia</span>
                 <span class="step-card__desc">Mas ainda não escrevi. Preciso de ajuda pra criar o texto.</span>
               </button>
               <button type="button" class="step-card" role="radio" aria-selected="false" data-origem="manuscrito">
-                <span class="step-card__icon">📝</span>
+                <span class="step-card__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z"/>
+                    <path d="M5 4a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3"/>
+                    <path d="M9 9h7"/>
+                    <path d="M9 13h7"/>
+                    <path d="M9 17h4"/>
+                  </svg>
+                </span>
                 <span class="step-card__titulo">Tenho um manuscrito</span>
                 <span class="step-card__desc">Já escrevi. Quero revisar, diagramar e publicar.</span>
               </button>
               <button type="button" class="step-card" role="radio" aria-selected="false" data-origem="video">
-                <span class="step-card__icon">🎥</span>
+                <span class="step-card__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12h2"/>
+                    <path d="M7 9v6"/>
+                    <path d="M11 6v12"/>
+                    <path d="M15 8v8"/>
+                    <path d="M19 10v4"/>
+                  </svg>
+                </span>
                 <span class="step-card__titulo">Tenho vídeos/áudios</span>
                 <span class="step-card__desc">YouTube, podcast, sermões, palestras. Quero virar livro.</span>
               </button>
               <button type="button" class="step-card step-card--accent" role="radio" aria-selected="false" data-origem="impresso">
-                <span class="step-card__icon">📚</span>
+                <span class="step-card__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="3" width="14" height="5"/>
+                    <rect x="3" y="9" width="16" height="6"/>
+                    <rect x="5" y="16" width="13" height="5"/>
+                    <path d="M8 5.5h2"/>
+                    <path d="M8 11.5h2"/>
+                    <path d="M8 18h2"/>
+                  </svg>
+                </span>
                 <span class="step-card__titulo">Já tenho o livro pronto</span>
                 <span class="step-card__desc">Quero vender na Amazon e Mercado Livre.</span>
               </button>
@@ -529,7 +654,7 @@
 
           <!-- STEP c-video (só caminho video) -->
           <div class="step" data-step="c-video" hidden>
-            <h3 class="step__pergunta">Sobre seus vídeos</h3>
+            <h3 class="step__pergunta" data-num="2">Sobre seus vídeos</h3>
             <div class="slider-group">
               <label for="vid-horas">Horas de vídeo bruto: <output id="out-vid-horas">10</output>h</label>
               <input type="range" id="vid-horas" min="1" max="100" step="1" value="10">
@@ -546,7 +671,7 @@
 
           <!-- STEP b-servicos (manuscrito/ideia/video continuação) -->
           <div class="step" data-step="b-servicos" hidden>
-            <h3 class="step__pergunta">De que serviços editoriais você precisa?</h3>
+            <h3 class="step__pergunta" data-num="2">De que serviços editoriais você precisa?</h3>
             <fieldset class="checks">
               <label class="check"><input type="checkbox" data-svc="ghostwriting"> Ghostwriting <span class="check__preco">R$ 6.000</span></label>
               <label class="check"><input type="checkbox" data-svc="revisao"> Revisão profissional <span class="check__preco">R$ 9/lauda</span></label>
@@ -561,7 +686,7 @@
 
           <!-- STEP b-tamanho -->
           <div class="step" data-step="b-tamanho" hidden>
-            <h3 class="step__pergunta">Quantas páginas terá o livro?</h3>
+            <h3 class="step__pergunta" data-num="3">Quantas páginas terá o livro?</h3>
             <div class="slider-group">
               <label for="paginas">Páginas: <output id="out-paginas">200</output></label>
               <input type="range" id="paginas" min="80" max="400" step="10" value="200">
@@ -582,7 +707,7 @@
 
           <!-- STEP impressao -->
           <div class="step" data-step="impressao" hidden>
-            <h3 class="step__pergunta">Quer imprimir exemplares físicos?</h3>
+            <h3 class="step__pergunta" data-num="4">Quer imprimir exemplares físicos?</h3>
             <div class="radio-pills">
               <label class="radio-pill"><input type="radio" name="quer-impressao" value="nao" checked> Não, só digital</label>
               <label class="radio-pill"><input type="radio" name="quer-impressao" value="sim"> Sim, quero impressão</label>
@@ -605,7 +730,7 @@
 
           <!-- STEP lancamento -->
           <div class="step" data-step="lancamento" hidden>
-            <h3 class="step__pergunta">Quer ações de lançamento?</h3>
+            <h3 class="step__pergunta" data-num="5">Quer ações de lançamento?</h3>
             <fieldset class="checks">
               <label class="check"><input type="checkbox" data-svc="comunicacao"> Comunicação / assessoria <span class="check__preco">R$ 2.100</span></label>
               <label class="check"><input type="checkbox" data-svc="kit_influenciador"> Kits para influenciadores (10 un) <span class="check__preco">R$ 750</span></label>
@@ -616,7 +741,7 @@
 
           <!-- STEP distribuicao -->
           <div class="step step--distribuicao" data-step="distribuicao" hidden>
-            <h3 class="step__pergunta" id="dist-titulo">Quer também distribuir e vender?</h3>
+            <h3 class="step__pergunta" id="dist-titulo" data-num="6">Quer também distribuir e vender?</h3>
             <p class="step__nota" id="dist-nota">Custo mensal estimado, baseado nos canais e volumes que você escolher. Armazenagem inclusa · cobrada por exemplar em estoque.</p>
             <div class="radio-pills" id="dist-toggle-pills" style="margin-bottom:18px">
               <label class="radio-pill"><input type="radio" name="quer-dist" value="nao" checked> Não, obrigado</label>
@@ -676,7 +801,8 @@
     <!-- ── COMO FUNCIONA ── -->
     <section class="como-funciona">
       <div class="ornament-rule"><span class="rule-line"></span><span class="rule-mark">§</span><span class="rule-line"></span></div>
-      <h2 class="section-label">Como funciona</h2>
+      <p class="section-label">O processo</p>
+      <h2 class="section-heading">Como funciona</h2>
       <ol class="passos">
         <li><span class="passo-num">1</span><div><strong>Conversa inicial</strong><span>Entendemos seu projeto — gratuito, sem compromisso.</span></div></li>
         <li><span class="passo-num">2</span><div><strong>Proposta</strong><span>Você recebe o orçamento detalhado.</span></div></li>
@@ -689,7 +815,8 @@
     <!-- ── SOBRE ── -->
     <section class="sobre">
       <div class="ornament-rule"><span class="rule-line"></span><span class="rule-mark">†</span><span class="rule-line"></span></div>
-      <h2 class="section-label">Sobre a Contemplatio</h2>
+      <p class="section-label">Quem somos</p>
+      <h2 class="section-heading">Sobre a Contemplatio</h2>
       <div class="sobre__box">
         <p>A Contemplatio é uma editora cristã especializada em espiritualidade, teologia e vida contemplativa. Já publicamos obras de autores como Georges Bernanos e Nikolai Berdyaev. Seu livro terá o mesmo padrão de qualidade.</p>
       </div>
