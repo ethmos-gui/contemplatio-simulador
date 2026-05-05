@@ -455,20 +455,27 @@
       .resumo {
         position: fixed; bottom: 0; left: 0; right: 0;
         border: none; border-top: 1.5px solid var(--gold-light);
-        padding: 12px 20px; max-height: 50vh; overflow-y: auto;
-        box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+        padding: 10px 16px 12px;
+        box-shadow: 0 -4px 16px rgba(0,0,0,0.10);
         z-index: 50;
+        display: flex; flex-direction: column; gap: 6px;
       }
-      .resumo__titulo { font-size: 16px; padding-bottom: 6px; margin-bottom: 8px; }
+      .resumo__titulo { display: none; }
       .resumo__lista { display: none; }
-      .resumo__total { padding: 4px 0; border: none; margin-bottom: 4px; flex-direction: row; gap: 10px; align-items: baseline; }
+      .resumo__total {
+        padding: 0; border: none; margin: 0;
+        flex-direction: row; gap: 10px; align-items: baseline;
+      }
       .resumo__total::after { display: none; }
+      .resumo__total-label { margin-bottom: 0; font-size: 10px; letter-spacing: 0.16em; }
       .resumo__total-valor { font-size: 22px; }
-      .resumo__total--mensal .resumo__total-valor { font-size: 18px; }
+      .resumo__total--mensal { border: none; padding: 0; }
+      .resumo__total--mensal .resumo__total-valor { font-size: 16px; color: var(--gold); }
       .resumo__nota, .resumo__sugestao { display: none; }
-      .btn { font-size: 14px; padding: 10px 14px; }
+      .btn { font-size: 14px; padding: 9px 14px; margin: 0; }
       .btn--secondary { display: none; }
-      body { padding-bottom: 160px; }
+      body { padding-bottom: 130px; }
+      body.has-mensal { padding-bottom: 170px; }
     }
 
     /* ── Mobile ── */
@@ -1049,9 +1056,11 @@
       $resumoMensalBloco.hidden = false;
       $resumoMensalValor.textContent = Calc.formatBRL(totalMensal) + '/mês';
       $resumoNota.hidden = false;
+      document.body.classList.add('has-mensal');
     } else {
       $resumoMensalBloco.hidden = true;
       $resumoNota.hidden = true;
+      document.body.classList.remove('has-mensal');
     }
 
     // Sugestão de pacote
